@@ -1,4 +1,4 @@
-import { mudConfig } from "@latticexyz/world/register";
+import { mudConfig, resolveTableId } from "@latticexyz/world/register";
 
 export default mudConfig({
   enums: {
@@ -19,6 +19,7 @@ export default mudConfig({
     },
     EncounterTrigger: "bool",
     Encounterable: "bool",
+
     MapConfig: {
       keySchema: {},
       dataStruct: false,
@@ -28,6 +29,23 @@ export default mudConfig({
         terrain: "bytes",
       },
     },
+
+    BattleMap: {
+      keySchema: {
+        gamenumber: "bytes32",
+      },
+      dataStruct: false,
+      schema: {
+        gamecreatedby: "bytes32",
+        gamestart: "bool",
+        width: "uint32",
+        height: "uint32",
+        gamepaused: "bool",
+        gameend: "bool",
+        winner:"bytes32"
+      }
+    },
+
     MonsterCatchAttempt: {
       ephemeral: true,
       dataStruct: false,
@@ -51,4 +69,21 @@ export default mudConfig({
       },
     },
   },
+
+  modules: [{
+    name: "UniqueEntityModule",
+    root: true,
+    args: [],
+  },
+  {
+    name: "KeysInTableModule",
+    root: true,
+    args: [resolveTableId("BattleMap")],
+  },
+  {
+    name: "KeysWithValueModule",
+    root: true,
+    args: [resolveTableId("BattleMap")],
+  }
+  ],
 });
