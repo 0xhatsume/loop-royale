@@ -69,6 +69,27 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
+    BattleMap: (() => {
+      const tableId = new TableId("", "BattleMap");
+      return defineComponent(
+        world,
+        {
+          gamecreatedby: RecsType.String,
+          gamestart: RecsType.Boolean,
+          width: RecsType.Number,
+          height: RecsType.Number,
+          gamepaused: RecsType.Boolean,
+          gameend: RecsType.Boolean,
+          winner: RecsType.String,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
     MonsterCatchAttempt: (() => {
       const tableId = new TableId("", "MonsterCatchAtte");
       return defineComponent(

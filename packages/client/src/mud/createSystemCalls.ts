@@ -9,6 +9,7 @@ export type SystemCalls = ReturnType<typeof createSystemCalls>;
 export function createSystemCalls(
   { playerEntity, singletonEntity, worldSend, txReduced$ }: SetupNetworkResult,
   {
+    GameMap,
     Encounter,
     MapConfig,
     MonsterCatchAttempt,
@@ -27,6 +28,11 @@ export function createSystemCalls(
       (y + mapConfig.height) % mapConfig.height,
     ];
   };
+
+  const createGame = async (width: number, height: number) => {
+    const tx = await worldSend("createGame", [width, height]);
+    //await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
+  }
 
   const isObstructed = (x: number, y: number) => {
     return runQuery([Has(Obstruction), HasValue(Position, { x, y })]).size > 0;
@@ -141,6 +147,7 @@ export function createSystemCalls(
   };
 
   return {
+    createGame,
     moveTo,
     moveBy,
     spawn,
