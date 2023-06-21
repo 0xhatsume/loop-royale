@@ -3,6 +3,7 @@ import { SyncState } from "@latticexyz/network";
 import { useMUD } from "./MUDContext";
 import { GameBoard } from "./GameBoard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
 import Home from "./pages/Home/Home";
 
 export const App = () => {
@@ -18,9 +19,9 @@ export const App = () => {
   });
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
+    <div className="w-full h-screen bg-[#1C140F]">
+      <NavBar />
       {
-      
         loadingState.state !== SyncState.LIVE ? (
         <div>
           {loadingState.msg} ({Math.floor(loadingState.percentage)}%)
