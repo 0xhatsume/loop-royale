@@ -23,13 +23,16 @@
     "@latticexyz/utils": "2.0.0-alpha.1.177",
     "@latticexyz/world": "2.0.0-alpha.1.177",
     "@wagmi/chains": "^0.2.22",
+    "@web3mq/client": "^1.0.13",
     "contracts": "workspace:*",
     "ethers": "^5.7.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.13.0",
     "react-toastify": "^9.1.2",
-    "tailwind-merge": "^1.11.0"
+    "tailwind-merge": "^1.11.0",
+    "viem": "^1.1.1",
+    "wagmi": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.13",
