@@ -3,6 +3,7 @@ import { useGameKeyListener } from '../../hooks/useGameKeyListener';
 import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
 import { getComponentValue } from '@latticexyz/recs';
+import GameChatBox from '../../components/GameChatBox/GameChatBox';
 
 const GameRoom = () => {
   useGameKeyListener();
@@ -30,10 +31,20 @@ const GameRoom = () => {
         
         {/* Side Bar Rank and Chat */}
         <div className="h-full w-1/3 border-l
-
+        px-8
+        flex flex-col
         ">
 
+          {/* Rank */}
+          <div className="w-full h-2/5
+          mt-3
+          border rounded-lg
+          ">
 
+          </div>
+
+          {/* Chat */}
+          <GameChatBox/>
           
         </div>
       </div>
