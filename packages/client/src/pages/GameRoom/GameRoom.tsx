@@ -17,18 +17,57 @@ const GameRoom = () => {
   const mapHeight = mapParams?.height;
   const mapWidth = mapParams?.width;
   //console.log(mapHeight, mapWidth)
+  const height = 12
+  const width = 12
+  const rows = new Array(height).fill(0).map((_, i) => i);
+  const columns = new Array(width).fill(0).map((_, i) => i);
   
   return (
     <div className="h-full w-full
     flex justify-end items-start
     ">  
-
+        
+        {/* left placeholder */}
         <div className="h-full border"></div>
 
-        {/* Game Board */}
-        <div className="h-4/5 w-2/5 
-        mt-8 mx-20
-        border"></div>
+        {/* Game Area */}
+        <div className="h-full w-1/2 flex flex-col
+        justify-start items-center
+        border">
+
+          {/* Game Board */}
+          <div className="w-full min-h-[44rem] min-w-[44rem] 
+          max-h-[44rem] p-4
+          overflow-auto
+          flex flex-col justify-start items-start
+            ">
+            {rows.map((_, y) => {
+              return (
+              <div className="flex justify-start items-center">
+                {columns.map((_, x) => {
+                return (
+                  <div key={`${x}-${y}`} 
+                    className="bg-blue-900/30 border border-red-500
+                    min-h-[4rem] min-w-[4rem] 
+                    flex justify-center items-center
+                    ">
+                      {`${x}-${y}`}
+                    </div>
+                )
+              })}
+              </div>
+              )
+            })}
+          </div>
+
+          {/* Controls Panel */}
+          <div className="w-full grow 
+          border border-green-500 border-2
+          ">
+
+          </div>
+
+        </div>
         
         {/* Side Bar Rank and Chat */}
         <div className="h-full w-1/3 border-l
