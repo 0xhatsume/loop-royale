@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAccount, useConnect, useEnsName, useDisconnect } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected'
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { addressShortener } from '../../utils/addressShortener';
 
 const ConnectWallet = () => {
     const { address, isConnected } = useAccount()
@@ -10,8 +11,7 @@ const ConnectWallet = () => {
     })
     const { disconnect } = useDisconnect()
 
-    const shortAddress = address?.length > 40 ? 
-        address.slice(0, 5) + "..." + address.slice(-4) : (address??"");
+    const shortAddress = addressShortener(address)
 
     const handleConnect = () => {
         !isConnected ? connect() : disconnect();
