@@ -2,6 +2,9 @@ import React from 'react';
 import { useEntityQuery } from '@latticexyz/react';
 import { Entity, Has, getComponentValueStrict, getComponentValue } from "@latticexyz/recs";
 import { useMUD } from '../../MUDContext';
+import RoomCard from '../../components/RoomCard';
+import {ethers} from 'ethers';
+import { addressShortener } from '../../utils/addressShortener';
 
 
 const Home = () => {
@@ -10,8 +13,12 @@ const Home = () => {
     systemCalls: { createGame },
   } = useMUD();
 
+  const gameCreator = (gamecreatedby: string) => {
+    return addressShortener(ethers.utils.hexStripZeros(gamecreatedby, 32))
+  }
+  
   const battleMaps = useEntityQuery([Has(BattleMap)]).map((entity) => {
-    return (getComponentValue(BattleMap, entity))
+    return {...getComponentValue(BattleMap, entity), roomNumber: parseInt(entity)}
   });
 
   return (
@@ -39,15 +46,17 @@ const Home = () => {
           
           ">
 
-            <div className="w-full flex justify-between items-center
-              px-7 bg-[#282828]
+            <div className="w-full flex items-center
+              py-1 bg-[#282828]
+              flex-nowrap text-center
               border rounded-t-lg 
             ">
-              <span>No.</span>
-              <span>Room Name</span>
-              <span>Host</span>
-              <span>Players</span>
-              <span className="mr-4">Status</span>
+              <div className="w-[5rem] px-2">Game</div>
+              <div className="w-[15rem] text-left pl-4">Game Name</div>
+              <div className="w-[7rem]">Format</div>
+              <div className="w-[11.5rem]">Host</div>
+              <div className="w-[7rem]">Players</div>
+              <div className="w-[13rem]">Status</div>
             </div>
 
             <div className="w-full h-4/5
@@ -55,6 +64,20 @@ const Home = () => {
               shadow-inner shadow-lg
               border
             ">
+
+            {
+              battleMaps.map((bm) => {
+                return(
+                <RoomCard 
+                  roomNum={bm.roomNumber}
+                  roomName={null}
+                  format={`${bm.width} x ${bm.height}`}
+                  host={gameCreator(bm.gamecreatedby)}
+                  players={null}
+                  status={null}
+                />)
+              })
+            }
             </div>
 
 
