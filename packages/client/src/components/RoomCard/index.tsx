@@ -1,8 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const RoomCard = ({roomNum, roomName, format, host, players, status}) => {
   return (
-    <div className="w-full py-3
+    
+    <Link to={`/game/${roomNum}`} className="w-full py-3
     bg-amber-100 text-gray-700 font-medium
     flex items-center 
     
@@ -27,7 +29,7 @@ const RoomCard = ({roomNum, roomName, format, host, players, status}) => {
           </button>
       </div>
     
-    </div>
+    </Link>
   )
 }
 
