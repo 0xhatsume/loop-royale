@@ -5,6 +5,7 @@ import { GameBoard } from "./GameBoard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Home from "./pages/Home/Home";
+import GameRoom from "./pages/GameRoom/GameRoom";
 
 export const App = () => {
   const {
@@ -19,7 +20,7 @@ export const App = () => {
   });
 
   return (
-    <div className="w-full h-screen bg-[#1C140F]">
+    <div className="w-full h-screen bg-[#1C140F] flex flex-col">
       <NavBar />
       {
         loadingState.state !== SyncState.LIVE ? (
@@ -30,6 +31,7 @@ export const App = () => {
         <Router>
           <Routes>
             <Route path="/" element={<Home/>} />
+            <Route path="/game/:id" element={<GameRoom />} />
             <Route path="/demo" element={<GameBoard />} />
           </Routes>
         </Router>
