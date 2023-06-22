@@ -4,6 +4,7 @@ import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
 import { getComponentValue } from '@latticexyz/recs';
 import GameChatBox from '../../components/GameChatBox/GameChatBox';
+import RankMonitor from '../../components/RankMonitor/RankMonitor';
 
 const GameRoom = () => {
   useGameKeyListener();
@@ -31,17 +32,12 @@ const GameRoom = () => {
         
         {/* Side Bar Rank and Chat */}
         <div className="h-full w-1/3 border-l
-        px-8
+        px-4
         flex flex-col
         ">
 
           {/* Rank */}
-          <div className="w-full h-2/5
-          mt-3
-          border rounded-lg
-          ">
-
-          </div>
+          <RankMonitor/>
 
           {/* Chat */}
           <GameChatBox/>

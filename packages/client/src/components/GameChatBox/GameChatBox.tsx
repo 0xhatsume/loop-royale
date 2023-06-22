@@ -2,7 +2,7 @@ import React from 'react'
 
 const GameChatBox = () => {
     return (
-    <div className="w-full h-full
+    <div className="w-full flex-grow
         mt-3 mb-9 p-2
         border rounded-lg
         flex flex-col
