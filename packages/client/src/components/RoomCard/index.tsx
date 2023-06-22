@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const RoomCard = ({roomNum, roomName, format, host, players, status}) => {
+const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) => {
+  
   return (
     
-    <Link to={`/game/${roomNum}`} className="w-full py-3
-    bg-amber-100 text-gray-700 font-medium
+    <Link to={`/game/${entity}`} className="w-full py-3
+    bg-amber-100 hover:bg-amber-700
+    text-gray-700 hover:text-white font-medium
     flex items-center 
     
     flex-nowrap text-center

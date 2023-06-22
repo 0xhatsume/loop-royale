@@ -18,7 +18,10 @@ const Home = () => {
   }
   
   const battleMaps = useEntityQuery([Has(BattleMap)]).map((entity) => {
-    return {...getComponentValue(BattleMap, entity), roomNumber: parseInt(entity)}
+    return {...getComponentValue(BattleMap, entity), 
+              entity,
+              roomNumber: parseInt(entity)
+            }
   });
 
   return (
@@ -59,6 +62,7 @@ const Home = () => {
               <div className="w-[13rem]">Status</div>
             </div>
 
+            {/* room cards */}
             <div className="w-full h-4/5
               bg-[#eebd9f] overflow-y-auto
               shadow-inner shadow-lg
@@ -69,6 +73,8 @@ const Home = () => {
               battleMaps.map((bm) => {
                 return(
                 <RoomCard 
+                  key={bm.entity}
+                  entity={bm.entity}
                   roomNum={bm.roomNumber}
                   roomName={null}
                   format={`${bm.width} x ${bm.height}`}
