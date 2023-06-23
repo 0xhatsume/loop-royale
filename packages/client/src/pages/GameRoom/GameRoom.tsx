@@ -18,7 +18,7 @@ const GameRoom = () => {
   const mapWidth = mapParams?.width;
   //console.log(mapHeight, mapWidth)
   const height = 12
-  const width = 12
+  const width = 15
   const rows = new Array(height).fill(0).map((_, i) => i);
   const columns = new Array(width).fill(0).map((_, i) => i);
   
@@ -31,16 +31,18 @@ const GameRoom = () => {
         <div className="h-full border"></div>
 
         {/* Game Area */}
-        <div className="h-full w-1/2 flex flex-col
+        <div className="h-full w-1/2 max-w-1/2 flex flex-col
         justify-start items-center
         border">
 
           {/* Game Board */}
-          <div className="w-full min-h-[44rem] min-w-[44rem] 
+          <div className={`w-full min-h-[44rem] min-w-[44rem] 
           max-h-[44rem] p-4
           overflow-auto
-          flex flex-col justify-start items-start
-            ">
+          flex flex-col 
+          ${height>11?"justify-start":"justify-center"} 
+          ${width>14?"items-start":"items-center"}
+            `}>
             {rows.map((_, y) => {
               return (
               <div className="flex justify-start items-center">
