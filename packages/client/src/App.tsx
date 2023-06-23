@@ -32,7 +32,6 @@ export const App = () => {
           <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="/game/:id" element={<GameRoom />} />
-            <Route path="/demo" element={<GameBoard />} />
           </Routes>
         </Router>
         
