@@ -7,16 +7,36 @@ import GameChatBox from '../../components/GameChatBox/GameChatBox';
 import RankMonitor from '../../components/RankMonitor/RankMonitor';
 
 const GameRoom = () => {
+  
+  try {
+    const { components: { BattleMap } } = useMUD();
+    const params = useParams();
+    const mapParams = getComponentValue(BattleMap, params?.id);
+    const mapHeight = mapParams?.height;
+    const mapWidth = mapParams?.width;
+
+    if (isNaN(mapHeight * mapWidth)){
+      return (
+        <div className="h-full w-full
+        flex justify-end items-start">
+          Invalid Game
+        </div>
+      )
+    }
+  } catch (error) {
+      console.log(error)
+      return (
+        <div className="h-full w-full
+        flex justify-end items-start">
+          Invalid Game
+        </div>
+      )
+  }
+  
   useGameKeyListener();
 
-  const params = useParams();
   // console.log("room params", params??"")
-  const { components: { BattleMap } } = useMUD();
-
-  const mapParams = getComponentValue(BattleMap, "0x01");
-  const mapHeight = mapParams?.height;
-  const mapWidth = mapParams?.width;
-  //console.log(mapHeight, mapWidth)
+  
   const height = 12
   const width = 15
   const rows = new Array(height).fill(0).map((_, i) => i);
@@ -45,7 +65,7 @@ const GameRoom = () => {
             `}>
             {rows.map((_, y) => {
               return (
-              <div className="flex justify-start items-center">
+              <div key={`row-${y}`} className="flex justify-start items-center">
                 {columns.map((_, x) => {
                 return (
                   <div key={`${x}-${y}`} 
