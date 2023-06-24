@@ -20,3 +20,9 @@ enum TerrainType {
   TallGrass,
   Boulder
 }
+
+enum ItemType {
+  None,
+  PowerUp,
+  Barrier
+}

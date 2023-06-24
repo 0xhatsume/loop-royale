@@ -78,246 +78,246 @@ library BattleMap {
   }
 
   /** Get gamecreatedby */
-  function getGamecreatedby(bytes32 gamenumber) internal view returns (bytes32 gamecreatedby) {
+  function getGamecreatedby(bytes32 key) internal view returns (bytes32 gamecreatedby) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0);
     return (Bytes.slice32(_blob, 0));
   }
 
   /** Get gamecreatedby (using the specified store) */
-  function getGamecreatedby(IStore _store, bytes32 gamenumber) internal view returns (bytes32 gamecreatedby) {
+  function getGamecreatedby(IStore _store, bytes32 key) internal view returns (bytes32 gamecreatedby) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 0);
     return (Bytes.slice32(_blob, 0));
   }
 
   /** Set gamecreatedby */
-  function setGamecreatedby(bytes32 gamenumber, bytes32 gamecreatedby) internal {
+  function setGamecreatedby(bytes32 key, bytes32 gamecreatedby) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((gamecreatedby)));
   }
 
   /** Set gamecreatedby (using the specified store) */
-  function setGamecreatedby(IStore _store, bytes32 gamenumber, bytes32 gamecreatedby) internal {
+  function setGamecreatedby(IStore _store, bytes32 key, bytes32 gamecreatedby) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((gamecreatedby)));
   }
 
   /** Get gamestart */
-  function getGamestart(bytes32 gamenumber) internal view returns (bool gamestart) {
+  function getGamestart(bytes32 key) internal view returns (bool gamestart) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Get gamestart (using the specified store) */
-  function getGamestart(IStore _store, bytes32 gamenumber) internal view returns (bool gamestart) {
+  function getGamestart(IStore _store, bytes32 key) internal view returns (bool gamestart) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 1);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Set gamestart */
-  function setGamestart(bytes32 gamenumber, bool gamestart) internal {
+  function setGamestart(bytes32 key, bool gamestart) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 1, abi.encodePacked((gamestart)));
   }
 
   /** Set gamestart (using the specified store) */
-  function setGamestart(IStore _store, bytes32 gamenumber, bool gamestart) internal {
+  function setGamestart(IStore _store, bytes32 key, bool gamestart) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((gamestart)));
   }
 
   /** Get width */
-  function getWidth(bytes32 gamenumber) internal view returns (uint32 width) {
+  function getWidth(bytes32 key) internal view returns (uint32 width) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
     return (uint32(Bytes.slice4(_blob, 0)));
   }
 
   /** Get width (using the specified store) */
-  function getWidth(IStore _store, bytes32 gamenumber) internal view returns (uint32 width) {
+  function getWidth(IStore _store, bytes32 key) internal view returns (uint32 width) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
     return (uint32(Bytes.slice4(_blob, 0)));
   }
 
   /** Set width */
-  function setWidth(bytes32 gamenumber, uint32 width) internal {
+  function setWidth(bytes32 key, uint32 width) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 2, abi.encodePacked((width)));
   }
 
   /** Set width (using the specified store) */
-  function setWidth(IStore _store, bytes32 gamenumber, uint32 width) internal {
+  function setWidth(IStore _store, bytes32 key, uint32 width) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((width)));
   }
 
   /** Get height */
-  function getHeight(bytes32 gamenumber) internal view returns (uint32 height) {
+  function getHeight(bytes32 key) internal view returns (uint32 height) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3);
     return (uint32(Bytes.slice4(_blob, 0)));
   }
 
   /** Get height (using the specified store) */
-  function getHeight(IStore _store, bytes32 gamenumber) internal view returns (uint32 height) {
+  function getHeight(IStore _store, bytes32 key) internal view returns (uint32 height) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 3);
     return (uint32(Bytes.slice4(_blob, 0)));
   }
 
   /** Set height */
-  function setHeight(bytes32 gamenumber, uint32 height) internal {
+  function setHeight(bytes32 key, uint32 height) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((height)));
   }
 
   /** Set height (using the specified store) */
-  function setHeight(IStore _store, bytes32 gamenumber, uint32 height) internal {
+  function setHeight(IStore _store, bytes32 key, uint32 height) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((height)));
   }
 
   /** Get gamepaused */
-  function getGamepaused(bytes32 gamenumber) internal view returns (bool gamepaused) {
+  function getGamepaused(bytes32 key) internal view returns (bool gamepaused) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 4);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Get gamepaused (using the specified store) */
-  function getGamepaused(IStore _store, bytes32 gamenumber) internal view returns (bool gamepaused) {
+  function getGamepaused(IStore _store, bytes32 key) internal view returns (bool gamepaused) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 4);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Set gamepaused */
-  function setGamepaused(bytes32 gamenumber, bool gamepaused) internal {
+  function setGamepaused(bytes32 key, bool gamepaused) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 4, abi.encodePacked((gamepaused)));
   }
 
   /** Set gamepaused (using the specified store) */
-  function setGamepaused(IStore _store, bytes32 gamenumber, bool gamepaused) internal {
+  function setGamepaused(IStore _store, bytes32 key, bool gamepaused) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 4, abi.encodePacked((gamepaused)));
   }
 
   /** Get gameend */
-  function getGameend(bytes32 gamenumber) internal view returns (bool gameend) {
+  function getGameend(bytes32 key) internal view returns (bool gameend) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 5);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Get gameend (using the specified store) */
-  function getGameend(IStore _store, bytes32 gamenumber) internal view returns (bool gameend) {
+  function getGameend(IStore _store, bytes32 key) internal view returns (bool gameend) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 5);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
   /** Set gameend */
-  function setGameend(bytes32 gamenumber, bool gameend) internal {
+  function setGameend(bytes32 key, bool gameend) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 5, abi.encodePacked((gameend)));
   }
 
   /** Set gameend (using the specified store) */
-  function setGameend(IStore _store, bytes32 gamenumber, bool gameend) internal {
+  function setGameend(IStore _store, bytes32 key, bool gameend) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 5, abi.encodePacked((gameend)));
   }
 
   /** Get winner */
-  function getWinner(bytes32 gamenumber) internal view returns (bytes32 winner) {
+  function getWinner(bytes32 key) internal view returns (bytes32 winner) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 6);
     return (Bytes.slice32(_blob, 0));
   }
 
   /** Get winner (using the specified store) */
-  function getWinner(IStore _store, bytes32 gamenumber) internal view returns (bytes32 winner) {
+  function getWinner(IStore _store, bytes32 key) internal view returns (bytes32 winner) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 6);
     return (Bytes.slice32(_blob, 0));
   }
 
   /** Set winner */
-  function setWinner(bytes32 gamenumber, bytes32 winner) internal {
+  function setWinner(bytes32 key, bytes32 winner) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setField(_tableId, _keyTuple, 6, abi.encodePacked((winner)));
   }
 
   /** Set winner (using the specified store) */
-  function setWinner(IStore _store, bytes32 gamenumber, bytes32 winner) internal {
+  function setWinner(IStore _store, bytes32 key, bytes32 winner) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setField(_tableId, _keyTuple, 6, abi.encodePacked((winner)));
   }
 
   /** Get the full data */
   function get(
-    bytes32 gamenumber
+    bytes32 key
   )
     internal
     view
@@ -332,7 +332,7 @@ library BattleMap {
     )
   {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getRecord(_tableId, _keyTuple, getSchema());
     return decode(_blob);
@@ -341,7 +341,7 @@ library BattleMap {
   /** Get the full data (using the specified store) */
   function get(
     IStore _store,
-    bytes32 gamenumber
+    bytes32 key
   )
     internal
     view
@@ -356,7 +356,7 @@ library BattleMap {
     )
   {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getRecord(_tableId, _keyTuple, getSchema());
     return decode(_blob);
@@ -364,7 +364,7 @@ library BattleMap {
 
   /** Set the full data using individual values */
   function set(
-    bytes32 gamenumber,
+    bytes32 key,
     bytes32 gamecreatedby,
     bool gamestart,
     uint32 width,
@@ -376,7 +376,7 @@ library BattleMap {
     bytes memory _data = encode(gamecreatedby, gamestart, width, height, gamepaused, gameend, winner);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _data);
   }
@@ -384,7 +384,7 @@ library BattleMap {
   /** Set the full data using individual values (using the specified store) */
   function set(
     IStore _store,
-    bytes32 gamenumber,
+    bytes32 key,
     bytes32 gamecreatedby,
     bool gamestart,
     uint32 width,
@@ -396,7 +396,7 @@ library BattleMap {
     bytes memory _data = encode(gamecreatedby, gamestart, width, height, gamepaused, gameend, winner);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.setRecord(_tableId, _keyTuple, _data);
   }
@@ -446,23 +446,23 @@ library BattleMap {
   }
 
   /** Encode keys as a bytes32 array using this table's schema */
-  function encodeKeyTuple(bytes32 gamenumber) internal pure returns (bytes32[] memory _keyTuple) {
+  function encodeKeyTuple(bytes32 key) internal pure returns (bytes32[] memory _keyTuple) {
     _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
   }
 
   /* Delete all data for given keys */
-  function deleteRecord(bytes32 gamenumber) internal {
+  function deleteRecord(bytes32 key) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
 
   /* Delete all data for given keys (using the specified store) */
-  function deleteRecord(IStore _store, bytes32 gamenumber) internal {
+  function deleteRecord(IStore _store, bytes32 key) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((gamenumber));
+    _keyTuple[0] = bytes32((key));
 
     _store.deleteRecord(_tableId, _keyTuple);
   }
