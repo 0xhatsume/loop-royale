@@ -2,19 +2,24 @@ import React from 'react';
 import { useGameKeyListener } from '../../hooks/useGameKeyListener';
 import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
-import { getComponentValue } from '@latticexyz/recs';
+import { getComponentValue, runQuery, Has, HasValue, Entity } from '@latticexyz/recs';
 import GameChatBox from '../../components/GameChatBox/GameChatBox';
 import RankMonitor from '../../components/RankMonitor/RankMonitor';
+//import { useRows, useRow } from "@latticexyz/react";
+import { padToBytes32 } from '../../utils/byteutils';
+import { ethers } from 'ethers';
 
 const GameRoom = () => {
-  
-  try {
-    const { components: { BattleMap } } = useMUD();
-    const params = useParams();
-    const mapParams = getComponentValue(BattleMap, params?.id);
-    const mapHeight = mapParams?.height;
-    const mapWidth = mapParams?.width;
+  const { components: { BattleMap, BmPlayer, BmPosition },
+            network: { storeCache, playerEntity },
+          } = useMUD();
+  const params = useParams();
+  const mapId = params?.id as string;
+  const mapParams = getComponentValue(BattleMap, mapId);
+  const mapHeight = mapParams?.height;
+  const mapWidth = mapParams?.width;
 
+  try {
     if (isNaN(mapHeight * mapWidth)){
       return (
         <div className="h-full w-full
@@ -24,23 +29,27 @@ const GameRoom = () => {
       )
     }
   } catch (error) {
-      console.log(error)
-      return (
-        <div className="h-full w-full
-        flex justify-end items-start">
-          Invalid Game
-        </div>
-      )
+    return (
+      <div className="h-full w-full
+      flex justify-end items-start">
+        Invalid Game
+      </div>
+    )
   }
+
+  const testPlayerEntity = "0x77510976e7f643cf6985fe78fe661fdf7f5ceb44"
+  // get player position
+  const playerPosition = getComponentValue(BmPosition, 
+    ethers.utils.solidityKeccak256(
+      ["bytes32", "bytes32"],
+      [padToBytes32(mapId), padToBytes32(testPlayerEntity)]
+    ) as Entity
+  )
   
   useGameKeyListener();
-
-  // console.log("room params", params??"")
   
-  const height = 12
-  const width = 15
-  const rows = new Array(height).fill(0).map((_, i) => i);
-  const columns = new Array(width).fill(0).map((_, i) => i);
+  const rows = new Array(mapHeight).fill(0).map((_, i) => i);
+  const columns = new Array(mapWidth).fill(0).map((_, i) => i);  
   
   return (
     <div className="h-full w-full
@@ -60,8 +69,8 @@ const GameRoom = () => {
           max-h-[44rem] p-4
           overflow-auto
           flex flex-col 
-          ${height>11?"justify-start":"justify-center"} 
-          ${width>14?"items-start":"items-center"}
+          ${mapHeight>11?"justify-start":"justify-center"} 
+          ${mapWidth>14?"items-start":"items-center"}
             `}>
             {rows.map((_, y) => {
               return (
@@ -73,7 +82,7 @@ const GameRoom = () => {
                     min-h-[4rem] min-w-[4rem] 
                     flex justify-center items-center
                     ">
-                      {`${x}-${y}`}
+                      {(x==playerPosition?.x && y==playerPosition?.y)? "🧑":`${x}-${y}`}
                     </div>
                 )
               })}
@@ -106,6 +115,7 @@ const GameRoom = () => {
         </div>
       </div>
   )
+  
 }
 
 export default GameRoom
