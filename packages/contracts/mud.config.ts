@@ -70,6 +70,14 @@ export default mudConfig({
       }
     },
 
+    // key is mapId
+    MapMembers: {
+      dataStruct: false,
+      schema: {
+        members: "bytes32[]"
+      }
+    },
+
     BmItem: {
       // key is mapId & x & y to bytes
       dataStruct: false,
@@ -87,6 +95,7 @@ export default mudConfig({
         mapId: "bytes32", //for easy search
         player: "bytes32", //for easy search
         ft: "uint32",
+        stake: "uint32",
         dead: "bool"
       },
     },
@@ -97,6 +106,22 @@ export default mudConfig({
       schema: {
         x: "uint32",
         y: "uint32",
+      }
+    },
+
+    SpawnPos: {
+      dataStruct: false,
+      schema: {
+        x: "uint32[]",
+        y: "uint32[]",
+      }
+    },
+
+    ItemPos: {
+      dataStruct: false,
+      schema: {
+        x: "uint32[]",
+        y: "uint32[]",
       }
     },
 

@@ -6,5 +6,21 @@ pragma solidity >=0.8.0;
 interface IBattleMapSystem {
   function createGame(uint32 width, uint32 height) external;
 
+  function registerPlayer(bytes32 mapId, uint32 stake) external;
+
+  function setStake(bytes32 mapId, uint32 stake) external;
+
+  function spawnPlayers(bytes32 mapId) external;
+
+  function spawnItems(bytes32 mapId) external;
+
+  function startGame(bytes32 mapId) external;
+
+  function pauseGame(bytes32 mapId) external;
+
+  function endGame(bytes32 mapId) external;
+
   function move(bytes32 mapId, uint32 x, uint32 y) external;
+
+  function deleteGame(bytes32 mapId) external;
 }

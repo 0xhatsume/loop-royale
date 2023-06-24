@@ -23,11 +23,12 @@ bytes32 constant BmPlayerTableId = _tableId;
 library BmPlayer {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](4);
+    SchemaType[] memory _schema = new SchemaType[](5);
     _schema[0] = SchemaType.BYTES32;
     _schema[1] = SchemaType.BYTES32;
     _schema[2] = SchemaType.UINT32;
-    _schema[3] = SchemaType.BOOL;
+    _schema[3] = SchemaType.UINT32;
+    _schema[4] = SchemaType.BOOL;
 
     return SchemaLib.encode(_schema);
   }
@@ -41,11 +42,12 @@ library BmPlayer {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](4);
+    string[] memory _fieldNames = new string[](5);
     _fieldNames[0] = "mapId";
     _fieldNames[1] = "player";
     _fieldNames[2] = "ft";
-    _fieldNames[3] = "dead";
+    _fieldNames[3] = "stake";
+    _fieldNames[4] = "dead";
     return ("BmPlayer", _fieldNames);
   }
 
@@ -173,12 +175,46 @@ library BmPlayer {
     _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((ft)));
   }
 
+  /** Get stake */
+  function getStake(bytes32 key) internal view returns (uint32 stake) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Get stake (using the specified store) */
+  function getStake(IStore _store, bytes32 key) internal view returns (uint32 stake) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 3);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Set stake */
+  function setStake(bytes32 key, uint32 stake) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((stake)));
+  }
+
+  /** Set stake (using the specified store) */
+  function setStake(IStore _store, bytes32 key, uint32 stake) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((stake)));
+  }
+
   /** Get dead */
   function getDead(bytes32 key) internal view returns (bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3);
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 4);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
@@ -187,7 +223,7 @@ library BmPlayer {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 3);
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 4);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
   }
 
@@ -196,7 +232,7 @@ library BmPlayer {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((dead)));
+    StoreSwitch.setField(_tableId, _keyTuple, 4, abi.encodePacked((dead)));
   }
 
   /** Set dead (using the specified store) */
@@ -204,11 +240,11 @@ library BmPlayer {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((dead)));
+    _store.setField(_tableId, _keyTuple, 4, abi.encodePacked((dead)));
   }
 
   /** Get the full data */
-  function get(bytes32 key) internal view returns (bytes32 mapId, bytes32 player, uint32 ft, bool dead) {
+  function get(bytes32 key) internal view returns (bytes32 mapId, bytes32 player, uint32 ft, uint32 stake, bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -217,7 +253,10 @@ library BmPlayer {
   }
 
   /** Get the full data (using the specified store) */
-  function get(IStore _store, bytes32 key) internal view returns (bytes32 mapId, bytes32 player, uint32 ft, bool dead) {
+  function get(
+    IStore _store,
+    bytes32 key
+  ) internal view returns (bytes32 mapId, bytes32 player, uint32 ft, uint32 stake, bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -226,8 +265,8 @@ library BmPlayer {
   }
 
   /** Set the full data using individual values */
-  function set(bytes32 key, bytes32 mapId, bytes32 player, uint32 ft, bool dead) internal {
-    bytes memory _data = encode(mapId, player, ft, dead);
+  function set(bytes32 key, bytes32 mapId, bytes32 player, uint32 ft, uint32 stake, bool dead) internal {
+    bytes memory _data = encode(mapId, player, ft, stake, dead);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -236,8 +275,8 @@ library BmPlayer {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, bytes32 key, bytes32 mapId, bytes32 player, uint32 ft, bool dead) internal {
-    bytes memory _data = encode(mapId, player, ft, dead);
+  function set(IStore _store, bytes32 key, bytes32 mapId, bytes32 player, uint32 ft, uint32 stake, bool dead) internal {
+    bytes memory _data = encode(mapId, player, ft, stake, dead);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -246,19 +285,29 @@ library BmPlayer {
   }
 
   /** Decode the tightly packed blob using this table's schema */
-  function decode(bytes memory _blob) internal pure returns (bytes32 mapId, bytes32 player, uint32 ft, bool dead) {
+  function decode(
+    bytes memory _blob
+  ) internal pure returns (bytes32 mapId, bytes32 player, uint32 ft, uint32 stake, bool dead) {
     mapId = (Bytes.slice32(_blob, 0));
 
     player = (Bytes.slice32(_blob, 32));
 
     ft = (uint32(Bytes.slice4(_blob, 64)));
 
-    dead = (_toBool(uint8(Bytes.slice1(_blob, 68))));
+    stake = (uint32(Bytes.slice4(_blob, 68)));
+
+    dead = (_toBool(uint8(Bytes.slice1(_blob, 72))));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(bytes32 mapId, bytes32 player, uint32 ft, bool dead) internal view returns (bytes memory) {
-    return abi.encodePacked(mapId, player, ft, dead);
+  function encode(
+    bytes32 mapId,
+    bytes32 player,
+    uint32 ft,
+    uint32 stake,
+    bool dead
+  ) internal view returns (bytes memory) {
+    return abi.encodePacked(mapId, player, ft, stake, dead);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

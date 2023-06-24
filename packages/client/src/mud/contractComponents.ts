@@ -196,6 +196,21 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
+    MapMembers: (() => {
+      const tableId = new TableId("", "MapMembers");
+      return defineComponent(
+        world,
+        {
+          members: RecsType.StringArray,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
     BmItem: (() => {
       const tableId = new TableId("", "BmItem");
       return defineComponent(
@@ -221,6 +236,7 @@ export function defineContractComponents(world: World) {
           mapId: RecsType.String,
           player: RecsType.String,
           ft: RecsType.Number,
+          stake: RecsType.Number,
           dead: RecsType.Boolean,
         },
         {
@@ -238,6 +254,38 @@ export function defineContractComponents(world: World) {
         {
           x: RecsType.Number,
           y: RecsType.Number,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
+    SpawnPos: (() => {
+      const tableId = new TableId("", "SpawnPos");
+      return defineComponent(
+        world,
+        {
+          x: RecsType.NumberArray,
+          y: RecsType.NumberArray,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
+    ItemPos: (() => {
+      const tableId = new TableId("", "ItemPos");
+      return defineComponent(
+        world,
+        {
+          x: RecsType.NumberArray,
+          y: RecsType.NumberArray,
         },
         {
           metadata: {
