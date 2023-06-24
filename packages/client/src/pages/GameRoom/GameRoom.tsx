@@ -8,6 +8,8 @@ import RankMonitor from '../../components/RankMonitor/RankMonitor';
 //import { useRows, useRow } from "@latticexyz/react";
 import { padToBytes32 } from '../../utils/byteutils';
 import { ethers } from 'ethers';
+import { useKeyboardMovement } from '../../useKeyboardMovement';
+import { useComponentValue } from "@latticexyz/react";
 
 const GameRoom = () => {
   const { components: { BattleMap, BmPlayer, BmPosition },
@@ -36,18 +38,21 @@ const GameRoom = () => {
       </div>
     )
   }
-
+  
   const testPlayerEntity = "0x77510976e7f643cf6985fe78fe661fdf7f5ceb44"
+  const mapIdBytes32String = padToBytes32(mapId);
+
+  const playerEntityKeyBytes32String = ethers.utils.solidityKeccak256(
+    ["bytes32", "bytes32"],
+    [mapIdBytes32String, padToBytes32(testPlayerEntity)]
+  ) as Entity
+  
+  useGameKeyListener(mapIdBytes32String);
   // get player position
-  const playerPosition = getComponentValue(BmPosition, 
-    ethers.utils.solidityKeccak256(
-      ["bytes32", "bytes32"],
-      [padToBytes32(mapId), padToBytes32(testPlayerEntity)]
-    ) as Entity
+  const playerPosition = useComponentValue(BmPosition, 
+    playerEntityKeyBytes32String
   )
-  
-  useGameKeyListener();
-  
+
   const rows = new Array(mapHeight).fill(0).map((_, i) => i);
   const columns = new Array(mapWidth).fill(0).map((_, i) => i);  
   

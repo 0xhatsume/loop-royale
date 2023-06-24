@@ -7,5 +7,6 @@ export function createClientComponents({ components }: SetupNetworkResult) {
   return {
     ...components,
     BmPosition: overridableComponent(components.BmPosition),
+    BmPlayer: overridableComponent(components.BmPlayer)
   };
 }
