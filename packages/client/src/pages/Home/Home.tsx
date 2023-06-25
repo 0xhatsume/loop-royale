@@ -5,12 +5,12 @@ import { useMUD } from '../../MUDContext';
 import RoomCard from '../../components/RoomCard';
 import {ethers} from 'ethers';
 import { addressShortener } from '../../utils/addressShortener';
-
+import {useSetAtom} from 'jotai';
+import { createWorldModalAtom } from '../../store';
 
 const Home = () => {
   const {
-    components: { BattleMap },
-    systemCalls: { createGame },
+    components: { BattleMap }
   } = useMUD();
 
   const gameCreator = (gamecreatedby: string) => {
@@ -23,6 +23,8 @@ const Home = () => {
               roomNumber: parseInt(entity)
             }
   });
+
+  const setCreateGameModalVisible = useSetAtom(createWorldModalAtom);
 
   return (
     <div className="w-full h-full
@@ -40,7 +42,7 @@ const Home = () => {
           <button className="m-2 mb-4 
             bg-orange-500 hover:bg-orange-700
             border rounded-lg p-2"
-            onClick={() => createGame(9,9)}
+            onClick={() => setCreateGameModalVisible(true)}
             >Create Game</button>
         </div>
 

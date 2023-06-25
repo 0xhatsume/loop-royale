@@ -11,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 import { WagmiConfig, createConfig, configureChains } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import { bladedao } from "./mud/supportedChains";
+import CreateGameModal from "./components/Modals/CreateGameModal";
 
 const rootElement = document.getElementById("react-root");
 if (!rootElement) throw new Error("React root not found");
@@ -36,7 +37,8 @@ setup().then((result) => {
     <MUDProvider value={result}>
       <WagmiConfig config={config}>
       <App />
-      <ToastContainer position="bottom-right" draggable={false} theme="dark" />
+      <CreateGameModal />
+      <ToastContainer position="top-left" draggable={false} theme="dark" />
       </WagmiConfig>
     </MUDProvider>
   );

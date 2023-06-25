@@ -1,13 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useMUD } from '../../MUDContext';
+import { useComponentValue } from "@latticexyz/react";
 
 const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) => {
-  
+  const { 
+    components: { BattleMap },
+  } = useMUD();
+
+  const {gamestart} = useComponentValue(BattleMap, entity);
+  console.log(gamestart)
+
   return (
     
-    <Link to={`/game/${entity}`} className="w-full py-3
-    bg-amber-100 hover:bg-amber-700
-    text-gray-700 hover:text-white font-medium
+    <div to={`/game/${entity}`} className="w-full py-3
+    bg-amber-100 
+    text-gray-700 font-medium
+    hover:text-orange-600 hover:font-bold
     flex items-center 
     
     flex-nowrap text-center
@@ -23,15 +32,17 @@ const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) =>
 
       <div className="flex justify-center flex-grow">
 
-        <button className="rounded-lg
-          bg-orange-400 hover:bg-orange-700
+        <Link to={`/game/${entity}`} className="rounded-lg
+          bg-orange-700 hover:bg-orange-400
+          border 
+          hover: border-2 hover:border-orange-700
           w-[8rem] py-1 text-white
         ">
-          {status ?? "???"}
-          </button>
+          {gamestart ? "Game in Progress" : "Join Game"}
+          </Link>
       </div>
     
-    </Link>
+    </div>
   )
 }
 
