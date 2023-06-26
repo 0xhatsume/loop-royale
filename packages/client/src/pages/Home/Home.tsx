@@ -106,7 +106,7 @@ const Home = () => {
             </div>
 
             {/* room cards */}
-            <div className="w-full grow
+            <div className="w-full h-2/3
               bg-[#eebd9f] overflow-y-auto
               shadow-inner shadow-lg
               border

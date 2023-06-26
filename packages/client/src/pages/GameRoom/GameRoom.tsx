@@ -4,6 +4,7 @@ import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
 import { getComponentValue, runQuery, Has, HasValue, Entity } from '@latticexyz/recs';
 import GameChatBox from '../../components/GameChatBox/GameChatBox';
+import ChatBox from '../../components/ChatBox/ChatBox';
 import RankMonitor from '../../components/RankMonitor/RankMonitor';
 //import { useRows, useRow } from "@latticexyz/react";
 import { padToBytes32 } from '../../utils/byteutils';
@@ -70,6 +71,7 @@ const GameRoom = () => {
   return (
     <div className="h-full w-full
     flex justify-end items-start
+    overflow-y-clip
     ">  
         
         {/* left placeholder */}
@@ -203,13 +205,22 @@ const GameRoom = () => {
         <div className="h-full w-1/3
         px-4
         flex flex-col
+        overflow-y-auto
         ">
 
           {/* Rank */}
           <RankMonitor/>
 
           {/* Chat */}
-          <GameChatBox/>
+          <div className="mt-3 mb-9
+            h-full
+            flex flex-col
+            overflow-y-auto
+          ">
+            <ChatBox room={mapId} msgLimit={0}/>
+          </div>
+
+          {/* <GameChatBox/> */}
           
         </div>
       </div>

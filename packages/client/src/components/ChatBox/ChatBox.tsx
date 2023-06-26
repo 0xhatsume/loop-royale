@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {firebase, db} from '../../firebase.config';
 import { addDoc, collection, serverTimestamp, 
     onSnapshot, query, where, orderBy, limitToLast } from 'firebase/firestore';
@@ -11,6 +11,7 @@ const ChatBox = ({room, msgLimit=100}) => {
     const [messages, setMessages] = useState([]);
     const messageRef = collection(db, "messages");
     const { address, isConnected } = useAccount();
+    const chatBoxRef = useRef(null);
     useEffect(() => {
         try {
         const queryMessages = msgLimit>0 ? query(messageRef, 
@@ -30,6 +31,7 @@ const ChatBox = ({room, msgLimit=100}) => {
             messages.push({...doc.data(), id: doc.id})
             });
             setMessages(messages);
+            
         });
 
         return () => unsuscribe();
@@ -53,27 +55,38 @@ const ChatBox = ({room, msgLimit=100}) => {
         setNewMsg('');
     }
 
+    useEffect(() => {
+        if(chatBoxRef.current){
+            chatBoxRef.current.scrollTop = 0;
+        }
+    }, [messages])
+    
+    console.log(chatBoxRef.current?.scrollHeight);
+    console.log(chatBoxRef.current?.scrollTop);
     return (
-        <div className="w-full h-3/5 bg-slate-700/20
+        <div className="w-full h-full bg-slate-700/20
                 flex flex-col justify-start
                 px-4 pt-1
                 border rounded-b-lg
+                overflow-y-auto
                 ">
 
                 {/* chat screen */}
                 <div className="w-full my-2 
-                pt-3 px-4
+                grow
+                py-3 px-4
                 bg-black/20
                 flex flex-col-reverse justify-start
                 overflow-y-auto
                 rounded-lg 
-                ">
+                "
+                ref={chatBoxRef}
+                >
                     {
                     messages.map((msg) => {
                         return(
                                 <div key={msg.id} className="w-full 
                                 px-2
-                                
                                 ">
                                 <span>{msg.user}: </span>
                                 <span className="mx-2">{msg.text}</span>
