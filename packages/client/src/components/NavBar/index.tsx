@@ -1,5 +1,6 @@
 import React from 'react';
 import ConnectWallet from '../ConnectWallet';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
 
@@ -10,7 +11,13 @@ const NavBar = () => {
     ">
 
       {/* title and logo */}
-      <div></div>
+      <Link to={"/"} className="mx-5 flex items-center
+      text-2xl font-bold align-top
+      py-4 px-4
+      border-b border-l rounded-2xl
+      ">
+        Loop Royale
+        </Link>
 
       {/* connect wallet button */}
       <div className="mr-12">

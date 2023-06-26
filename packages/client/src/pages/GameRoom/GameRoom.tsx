@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useGameKeyListener } from '../../hooks/useGameKeyListener';
 import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
@@ -10,8 +10,10 @@ import { padToBytes32 } from '../../utils/byteutils';
 import { ethers } from 'ethers';
 import { useKeyboardMovement } from '../../useKeyboardMovement';
 import { useComponentValue } from "@latticexyz/react";
+import { avatars } from '../../constants/assets';
 
 const GameRoom = () => {
+  console.log("GameRoom Refresh")
   const { components: { BattleMap, BmPlayer, BmPosition },
             network: { storeCache, playerEntity },
           } = useMUD();
@@ -54,7 +56,16 @@ const GameRoom = () => {
   )
 
   const rows = new Array(mapHeight).fill(0).map((_, i) => i);
-  const columns = new Array(mapWidth).fill(0).map((_, i) => i);  
+  const columns = new Array(mapWidth).fill(0).map((_, i) => i); 
+  
+  const [avatarUrl, setAvatarUrl] = useState<string>(avatars?.[0].src);
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    avatars.map((avatar, i) => {
+      if (avatar?.name === e.currentTarget.value) {
+        setAvatarUrl(avatar.src)
+      }
+    })
+  }
   
   return (
     <div className="h-full w-full
@@ -62,12 +73,13 @@ const GameRoom = () => {
     ">  
         
         {/* left placeholder */}
-        <div className="h-full border"></div>
+        <div className="h-full"></div>
 
         {/* Game Area */}
         <div className="h-full w-1/2 max-w-1/2 flex flex-col
         justify-start items-center
-        border">
+        
+        ">
 
           {/* Game Board */}
           <div className={`w-full min-h-[44rem] min-w-[44rem] 
@@ -86,8 +98,23 @@ const GameRoom = () => {
                     className="bg-blue-900/30 border border-red-500
                     min-h-[4rem] min-w-[4rem] 
                     flex justify-center items-center
-                    ">
-                      {(x==playerPosition?.x && y==playerPosition?.y)? "🧑":`${x}-${y}`}
+                    "
+                    
+                    style={{
+                      backgroundImage: `url(${
+                        (x==playerPosition?.x && y==playerPosition?.y)? 
+                        avatarUrl : ""
+                      })`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                    >
+                      {(x==playerPosition?.x && y==playerPosition?.y)? 
+                      
+                      null
+                      
+                      :`${x}-${y}`}
                     </div>
                 )
               })}
@@ -98,15 +125,82 @@ const GameRoom = () => {
 
           {/* Controls Panel */}
           <div className="w-full grow 
-          border border-green-500 border-2
+          flex p-3 items-center
           ">
+
+            <button className="
+            bg-red-400 hover:bg-red-600
+            h-3/4 w-[6rem]
+            px-4
+            rounded-2xl border border-red-600
+            hover:border-orange-800 hover:border-2
+            hover:shadow-lg hover:shadow-red-500
+            ">
+              Owner Start Game
+              </button>
+
+            <div className="h-3/4 w-1/5
+            mx-2 flex items-center overflow-hidden
+            border rounded-2xl border-amber-700
+            ">
+                <input type="number" defaultValue={0.1} 
+                  name="stake" 
+                  className="px-2
+                  h-full w-1/2
+                  bg-transparent
+                  text-white font-semibold
+                  text-center
+                  rounded-l-2xl
+                  "
+                  />
+                  <button className="
+                  h-full w-1/2
+                  bg-orange-700 hover:bg-orange-500
+                  hover:font-bold
+                  hover:border-2 hover:border-orange-600
+                  "
+                  >
+                    Confirm Stake
+                    </button>
+
+            </div>
+            <div className="
+            flex w-fit h-3/4 overflow-hidden
+            bg-yellow-600 hover:bg-yellow-400
+            px-2 py-2
+            rounded-2xl
+            ">
+              <img 
+                  className="h-[4.5rem] w-[4.5rem]
+                  rounded-l-lg
+                  "
+                  src={avatarUrl}/>
+              <select className="h-full text-black
+              bg-transparent focus:outline-none
+              "
+              onChange={(e) => {handleAvatarSelect(e)}}
+              >
+                <option key={0} selected>Choose Avatar</option>
+                  {/* <option value="Warrior1">
+                    warriror1
+                  </option> */}
+                {avatars.map((avatar, i) => {
+                  return (
+                    <option key={i+1} value={avatar?.name}>
+                      {avatar?.name?? "??"}
+                    </option>
+                  )
+                  })
+                }
+              </select>
+            </div>
 
           </div>
 
         </div>
         
         {/* Side Bar Rank and Chat */}
-        <div className="h-full w-1/3 border-l
+        <div className="h-full w-1/3
         px-4
         flex flex-col
         ">

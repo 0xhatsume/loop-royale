@@ -20,6 +20,7 @@ export const App = () => {
   });
 
   return (
+    <Router>
     <div className="w-full h-screen bg-[#1C140F] flex flex-col">
       <NavBar />
       {
@@ -28,14 +29,15 @@ export const App = () => {
           {loadingState.msg} ({Math.floor(loadingState.percentage)}%)
         </div>
       ) : (
-        <Router>
+        
           <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="/game/:id" element={<GameRoom />} />
           </Routes>
-        </Router>
+        
         
       )}
     </div>
+    </Router>
   );
 };
