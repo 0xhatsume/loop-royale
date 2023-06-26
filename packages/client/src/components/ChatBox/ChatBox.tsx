@@ -49,7 +49,7 @@ const ChatBox = ({room, msgLimit=100}) => {
             text: newMsg,
             createdAt: serverTimestamp(),
             room: room,
-            user: addressShortener(address?? "anon-user88")
+            user: address?? "anon-user88"
         })
     
         setNewMsg('');
@@ -88,7 +88,12 @@ const ChatBox = ({room, msgLimit=100}) => {
                                 <div key={msg.id} className="w-full 
                                 px-2
                                 ">
-                                <span>{msg.user}: </span>
+                    <span className={`${
+                        isConnected?
+                        (msg.user==address?
+                        "text-orange-400"
+                        : ""): ""
+                        }`}>{addressShortener(msg.user)}: </span>
                                 <span className="mx-2">{msg.text}</span>
                                 </div>
                     )}
