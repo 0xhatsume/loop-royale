@@ -22,12 +22,21 @@ export function createSystemCalls(
       BmPosition,
   }: ClientComponents
 ) {
-  const createGame = async (width: number, height: number) => {
-    const tx = await worldSend("createGame", [width, height]);
+  const createGame = async (width: number, height: number, address:string) => {
+
+    const playerAddress = defaultAbiCoder.encode(
+        ["address"],
+        [address]);
+    
+    const tx = await worldSend("createGame", [width, height, playerAddress]);
     //await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
   }
 
-  const moveTo = async (mapId: string, inputX: number, inputY: number) => {
+  const moveTo = async (mapId: string, inputX: number, inputY: number, address:string) => {
+    const playerAddress = defaultAbiCoder.encode(
+      ["address"],
+      [address]);
+
     // assume mapId is padded to 32 bytes
     if (!playerEntity) {
       throw new Error("no player");
@@ -35,7 +44,8 @@ export function createSystemCalls(
 
     const playerKey = ethers.utils.solidityKeccak256(
         ["bytes32", "bytes32"],
-        [mapId, padToBytes32(playerEntity)]
+        //[mapId, padToBytes32(playerEntity)]
+        [mapId, padToBytes32(address)] //short term fix
     ) as Entity;
 
     const mapIdBytes32 = defaultAbiCoder.encode(
@@ -49,25 +59,27 @@ export function createSystemCalls(
     });
 
     try {
-      const tx = await worldSend("move", [mapIdBytes32, inputX, inputY]);
+      const tx = await worldSend("move", [mapIdBytes32, inputX, inputY, playerAddress]);
       await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
     } finally {
       BmPosition.removeOverride(positionId);
     }
   };
 
-  const moveBy = async (mapId: string, deltaX: number, deltaY: number) => {
+  const moveBy = async (mapId: string, deltaX: number, deltaY: number, address: string) => {
+    const playerAddress = defaultAbiCoder.encode(
+      ["address"],
+      [address]);
+
     // assume mapId is padded to 32 bytes
     if (!playerEntity) {
       throw new Error("no player");
     }
     const playerKey = ethers.utils.solidityKeccak256(
       ["bytes32", "bytes32"],
-      [mapId, padToBytes32(playerEntity)]
+      //[mapId, padToBytes32(playerEntity)]
+      [mapId, padToBytes32(address)]//short term fix
     ) as Entity;
-    const mapIdBytes32 = defaultAbiCoder.encode(
-        ["bytes32"],
-        [mapId]);
 
     const playerPosition = getComponentValue(BmPosition, playerKey);
 
@@ -78,7 +90,8 @@ export function createSystemCalls(
 
     await moveTo(mapId, 
         parseInt(playerPosition.x) + parseInt(deltaX), 
-        parseInt(playerPosition.y) + parseInt(deltaY)
+        parseInt(playerPosition.y) + parseInt(deltaY),
+        address
         );
   };
 
