@@ -61,8 +61,6 @@ const ChatBox = ({room, msgLimit=100}) => {
         }
     }, [messages])
     
-    console.log(chatBoxRef.current?.scrollHeight);
-    console.log(chatBoxRef.current?.scrollTop);
     return (
         <div className="w-full h-full bg-slate-700/20
                 flex flex-col justify-start

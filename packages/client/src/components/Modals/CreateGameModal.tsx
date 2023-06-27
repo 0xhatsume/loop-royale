@@ -15,17 +15,11 @@ const CreateGameModal = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("current target")
         const roomname = e.currentTarget.roomname.value;
-        console.log(e.currentTarget.roomname.value)
         const boardheight = e.currentTarget.boardheight.value;
-        console.log(e.currentTarget.boardheight.value)
         const boardwidth = e.currentTarget.boardwidth.value;
-        console.log(e.currentTarget.boardwidth.value)
         const gameplayernums = e.currentTarget.gameplayernums.value;
-        console.log(e.currentTarget.gameplayernums.value)
         const minstake = e.currentTarget.minstake.value;
-        console.log(e.currentTarget.minstake.value)
 
         createGame(parseInt(boardwidth),parseInt(boardheight)).then(
             setWorldModalVisible(false)

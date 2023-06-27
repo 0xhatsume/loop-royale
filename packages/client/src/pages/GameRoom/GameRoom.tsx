@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { useGameKeyListener } from '../../hooks/useGameKeyListener';
 import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
-import { getComponentValue, runQuery, Has, HasValue, Entity } from '@latticexyz/recs';
+import { getComponentValueStrict, getComponentValue, runQuery, Has, HasValue, Entity } from '@latticexyz/recs';
 import GameChatBox from '../../components/GameChatBox/GameChatBox';
 import ChatBox from '../../components/ChatBox/ChatBox';
 import RankMonitor from '../../components/RankMonitor/RankMonitor';
@@ -12,6 +12,7 @@ import { ethers } from 'ethers';
 import { useKeyboardMovement } from '../../useKeyboardMovement';
 import { useComponentValue } from "@latticexyz/react";
 import { avatars } from '../../constants/assets';
+import { addressShortener } from '../../utils/addressShortener';
 
 const GameRoom = () => {
   console.log("GameRoom Refresh")
@@ -67,6 +68,23 @@ const GameRoom = () => {
       }
     })
   }
+
+  // query for player details in this map
+  const players = runQuery([Has(BmPlayer), HasValue(BmPlayer, {
+    mapId: mapIdBytes32String
+  })]);
+
+  const playerRanks = [...players].map((player) => {
+    //const p = useComponentValue(BmPlayer, player)
+    const p = getComponentValueStrict(BmPlayer, player) //just componentValue as the move hook will rerender
+    // when things change
+    return {
+      ...p,
+      status: p.dead ? "Dead" : "Alive",
+      player: addressShortener(ethers.utils.hexStripZeros(p.player)),
+      avatar: avatarUrl??"🐱",
+    }
+  })
   
   return (
     <div className="h-full w-full
@@ -183,9 +201,10 @@ const GameRoom = () => {
               <select className="h-full text-black
               bg-transparent focus:outline-none
               "
+              defaultValue={0}
               onChange={(e) => {handleAvatarSelect(e)}}
               >
-                <option key={0} selected>Choose Avatar</option>
+                <option key={0}>Choose Avatar</option>
                   {/* <option value="Warrior1">
                     warriror1
                   </option> */}
@@ -212,7 +231,7 @@ const GameRoom = () => {
         ">
 
           {/* Rank */}
-          <RankMonitor/>
+          <RankMonitor playerRanks={playerRanks}/>
 
           {/* Chat */}
           <div className="mt-3 mb-9

@@ -9,11 +9,10 @@ const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) =>
   } = useMUD();
 
   const {gamestart} = useComponentValue(BattleMap, entity);
-  console.log(gamestart)
 
   return (
     
-    <div to={`/game/${entity}`} className="w-full py-3
+    <div className="w-full py-3
     bg-amber-100 
     text-gray-700 font-medium
     hover:text-orange-600 hover:font-bold
