@@ -118,9 +118,10 @@ const ChatBox = ({room, msgLimit=100}) => {
                         outline-none
                         ${isConnected?"":"text-lg placeholder:text-red-600"}
                         `}
+                        maxLength={250}
                         onChange={(e) => isConnected?setNewMsg(e.target.value):null}
                         value={newMsg}
-                        placeholder={isConnected?"Type a message...":"Pls connect wallet to chat."}
+                        placeholder={isConnected?"Type a message... (max 250words)":"Pls connect wallet to chat."}
                         ></input>
                         <button className="
                         h-full w-[5rem]

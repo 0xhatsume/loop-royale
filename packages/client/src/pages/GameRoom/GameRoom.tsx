@@ -97,7 +97,7 @@ const GameRoom = () => {
                 {columns.map((_, x) => {
                 return (
                   <div key={`${x}-${y}`} 
-                    className="bg-blue-900/30 border border-red-500
+                    className="bg-blue-900/30 border border-orange-900
                     min-h-[4rem] min-w-[4rem] 
                     flex justify-center items-center
                     "
@@ -116,7 +116,10 @@ const GameRoom = () => {
                       
                       null
                       
-                      :`${x}-${y}`}
+                      :
+                      ""
+                      //`${x}-${y}`
+                      }
                     </div>
                 )
               })}
