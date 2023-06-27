@@ -16,10 +16,11 @@ import { ItemType } from "../codegen/Types.sol";
 
 contract BattleMapSystem is System {
     //event GameCreated(uint256 battleMapId, uint32 width, uint32 height);
-    function createGame(uint32 width, uint32 height) public {
+    function createGame(uint32 width, uint32 height, address playerAddress) public {
 
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(address(playerAddress)); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
         bytes32 battleMapId = getUniqueEntity();
         bytes32 playerEntity = mapAndentityToEntityKey(battleMapId, player);
 
@@ -47,9 +48,10 @@ contract BattleMapSystem is System {
         BmPosition.set(playerEntity, 5, 5);
     }
 
-    function registerPlayer(bytes32 mapId, uint32 stake) public {
+    function registerPlayer(bytes32 mapId, uint32 stake, address playerAddress) public {
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
         bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
 
         // create player
@@ -65,9 +67,10 @@ contract BattleMapSystem is System {
         MapMembers.push(mapId, playerEntity);
     }
 
-    function setStake(bytes32 mapId, uint32 stake) public {
+    function setStake(bytes32 mapId, uint32 stake, address playerAddress) public {
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
         bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
 
         // require player to be in map
@@ -172,9 +175,10 @@ contract BattleMapSystem is System {
         }
     }
 
-    function startGame(bytes32 mapId) public {
+    function startGame(bytes32 mapId, address playerAddress) public {
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
 
         // check if player is owner
         require(BattleMap.getGamecreatedby(mapId) == player,
@@ -192,9 +196,10 @@ contract BattleMapSystem is System {
         BattleMap.setGamestart(mapId, true);
     }
 
-    function pauseGame(bytes32 mapId) public {
+    function pauseGame(bytes32 mapId, address playerAddress) public {
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
 
         // check if player is owner
         require(BattleMap.getGamecreatedby(mapId) == player,
@@ -212,9 +217,10 @@ contract BattleMapSystem is System {
         BattleMap.setGamepaused(mapId, true);
     }
 
-    function endGame(bytes32 mapId) public {
+    function endGame(bytes32 mapId, address playerAddress) public {
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
 
         // check if player is owner
         require(BattleMap.getGamecreatedby(mapId) == player,
@@ -232,9 +238,10 @@ contract BattleMapSystem is System {
         BattleMap.setGameend(mapId, true);
     }
 
-    function move(bytes32 mapId, uint32 x, uint32 y) public {
+    function move(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public {
         // get player entity key
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
         bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
 
         // get map state
@@ -278,9 +285,10 @@ contract BattleMapSystem is System {
         return deltaX + deltaY;
     }
 
-    function deleteGame(bytes32 mapId) public {
+    function deleteGame(bytes32 mapId, address playerAddress) public {
         // create entity keys
-        bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
 
         // check if player is owner
         require(BattleMap.getGamecreatedby(mapId) == player,
