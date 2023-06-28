@@ -13,6 +13,7 @@ import { useKeyboardMovement } from '../../useKeyboardMovement';
 import { useComponentValue } from "@latticexyz/react";
 import { avatars } from '../../constants/assets';
 import { addressShortener } from '../../utils/addressShortener';
+import { useAccount } from 'wagmi';
 
 const GameRoom = () => {
   console.log("GameRoom Refresh")
@@ -43,12 +44,13 @@ const GameRoom = () => {
     )
   }
   
+  const { address, isConnected } = useAccount();
   const testPlayerEntity = "0x77510976e7f643cf6985fe78fe661fdf7f5ceb44"
   const mapIdBytes32String = padToBytes32(mapId);
 
   const playerEntityKeyBytes32String = ethers.utils.solidityKeccak256(
     ["bytes32", "bytes32"],
-    [mapIdBytes32String, padToBytes32(testPlayerEntity)]
+    [mapIdBytes32String, padToBytes32(address)]
   ) as Entity
   
   useGameKeyListener(mapIdBytes32String);
@@ -56,7 +58,7 @@ const GameRoom = () => {
   const playerPosition = useComponentValue(BmPosition, 
     playerEntityKeyBytes32String
   )
-
+  console.log(playerPosition)
   const rows = new Array(mapHeight).fill(0).map((_, i) => i);
   const columns = new Array(mapWidth).fill(0).map((_, i) => i); 
   

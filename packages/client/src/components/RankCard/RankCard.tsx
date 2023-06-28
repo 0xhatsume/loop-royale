@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import {fromBn} from 'evm-bn';
 
 const RankCard = ({avatar, player, ft, stake, status}) => {
   return (
@@ -30,7 +31,7 @@ const RankCard = ({avatar, player, ft, stake, status}) => {
             <div className="w-[7rem] h-full px-1 
             flex items-center 
             ">
-                {stake??"???"}
+                {fromBn(stake)??"???"}
             </div>
             <div className="w-[5rem] h-full px-1 
             flex items-center 
