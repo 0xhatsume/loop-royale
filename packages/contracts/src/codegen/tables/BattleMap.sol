@@ -23,7 +23,7 @@ bytes32 constant BattleMapTableId = _tableId;
 library BattleMap {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](7);
+    SchemaType[] memory _schema = new SchemaType[](10);
     _schema[0] = SchemaType.BYTES32;
     _schema[1] = SchemaType.BOOL;
     _schema[2] = SchemaType.UINT32;
@@ -31,6 +31,9 @@ library BattleMap {
     _schema[4] = SchemaType.BOOL;
     _schema[5] = SchemaType.BOOL;
     _schema[6] = SchemaType.BYTES32;
+    _schema[7] = SchemaType.UINT256;
+    _schema[8] = SchemaType.UINT32;
+    _schema[9] = SchemaType.STRING;
 
     return SchemaLib.encode(_schema);
   }
@@ -44,7 +47,7 @@ library BattleMap {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](7);
+    string[] memory _fieldNames = new string[](10);
     _fieldNames[0] = "gamecreatedby";
     _fieldNames[1] = "gamestart";
     _fieldNames[2] = "width";
@@ -52,6 +55,9 @@ library BattleMap {
     _fieldNames[4] = "gamepaused";
     _fieldNames[5] = "gameend";
     _fieldNames[6] = "winner";
+    _fieldNames[7] = "stake";
+    _fieldNames[8] = "playerlimit";
+    _fieldNames[9] = "roomname";
     return ("BattleMap", _fieldNames);
   }
 
@@ -315,6 +321,192 @@ library BattleMap {
     _store.setField(_tableId, _keyTuple, 6, abi.encodePacked((winner)));
   }
 
+  /** Get stake */
+  function getStake(bytes32 key) internal view returns (uint256 stake) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 7);
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Get stake (using the specified store) */
+  function getStake(IStore _store, bytes32 key) internal view returns (uint256 stake) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 7);
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Set stake */
+  function setStake(bytes32 key, uint256 stake) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 7, abi.encodePacked((stake)));
+  }
+
+  /** Set stake (using the specified store) */
+  function setStake(IStore _store, bytes32 key, uint256 stake) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 7, abi.encodePacked((stake)));
+  }
+
+  /** Get playerlimit */
+  function getPlayerlimit(bytes32 key) internal view returns (uint32 playerlimit) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 8);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Get playerlimit (using the specified store) */
+  function getPlayerlimit(IStore _store, bytes32 key) internal view returns (uint32 playerlimit) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 8);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Set playerlimit */
+  function setPlayerlimit(bytes32 key, uint32 playerlimit) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 8, abi.encodePacked((playerlimit)));
+  }
+
+  /** Set playerlimit (using the specified store) */
+  function setPlayerlimit(IStore _store, bytes32 key, uint32 playerlimit) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 8, abi.encodePacked((playerlimit)));
+  }
+
+  /** Get roomname */
+  function getRoomname(bytes32 key) internal view returns (string memory roomname) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 9);
+    return (string(_blob));
+  }
+
+  /** Get roomname (using the specified store) */
+  function getRoomname(IStore _store, bytes32 key) internal view returns (string memory roomname) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 9);
+    return (string(_blob));
+  }
+
+  /** Set roomname */
+  function setRoomname(bytes32 key, string memory roomname) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 9, bytes((roomname)));
+  }
+
+  /** Set roomname (using the specified store) */
+  function setRoomname(IStore _store, bytes32 key, string memory roomname) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 9, bytes((roomname)));
+  }
+
+  /** Get the length of roomname */
+  function lengthRoomname(bytes32 key) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 9, getSchema());
+    return _byteLength / 1;
+  }
+
+  /** Get the length of roomname (using the specified store) */
+  function lengthRoomname(IStore _store, bytes32 key) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 9, getSchema());
+    return _byteLength / 1;
+  }
+
+  /** Get an item of roomname (unchecked, returns invalid data if index overflows) */
+  function getItemRoomname(bytes32 key, uint256 _index) internal view returns (string memory) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getFieldSlice(_tableId, _keyTuple, 9, getSchema(), _index * 1, (_index + 1) * 1);
+    return (string(_blob));
+  }
+
+  /** Get an item of roomname (using the specified store) (unchecked, returns invalid data if index overflows) */
+  function getItemRoomname(IStore _store, bytes32 key, uint256 _index) internal view returns (string memory) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 9, getSchema(), _index * 1, (_index + 1) * 1);
+    return (string(_blob));
+  }
+
+  /** Push a slice to roomname */
+  function pushRoomname(bytes32 key, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.pushToField(_tableId, _keyTuple, 9, bytes((_slice)));
+  }
+
+  /** Push a slice to roomname (using the specified store) */
+  function pushRoomname(IStore _store, bytes32 key, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.pushToField(_tableId, _keyTuple, 9, bytes((_slice)));
+  }
+
+  /** Pop a slice from roomname */
+  function popRoomname(bytes32 key) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.popFromField(_tableId, _keyTuple, 9, 1);
+  }
+
+  /** Pop a slice from roomname (using the specified store) */
+  function popRoomname(IStore _store, bytes32 key) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.popFromField(_tableId, _keyTuple, 9, 1);
+  }
+
+  /** Update a slice of roomname at `_index` */
+  function updateRoomname(bytes32 key, uint256 _index, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.updateInField(_tableId, _keyTuple, 9, _index * 1, bytes((_slice)));
+  }
+
+  /** Update a slice of roomname (using the specified store) at `_index` */
+  function updateRoomname(IStore _store, bytes32 key, uint256 _index, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.updateInField(_tableId, _keyTuple, 9, _index * 1, bytes((_slice)));
+  }
+
   /** Get the full data */
   function get(
     bytes32 key
@@ -328,7 +520,10 @@ library BattleMap {
       uint32 height,
       bool gamepaused,
       bool gameend,
-      bytes32 winner
+      bytes32 winner,
+      uint256 stake,
+      uint32 playerlimit,
+      string memory roomname
     )
   {
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -352,7 +547,10 @@ library BattleMap {
       uint32 height,
       bool gamepaused,
       bool gameend,
-      bytes32 winner
+      bytes32 winner,
+      uint256 stake,
+      uint32 playerlimit,
+      string memory roomname
     )
   {
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -371,9 +569,23 @@ library BattleMap {
     uint32 height,
     bool gamepaused,
     bool gameend,
-    bytes32 winner
+    bytes32 winner,
+    uint256 stake,
+    uint32 playerlimit,
+    string memory roomname
   ) internal {
-    bytes memory _data = encode(gamecreatedby, gamestart, width, height, gamepaused, gameend, winner);
+    bytes memory _data = encode(
+      gamecreatedby,
+      gamestart,
+      width,
+      height,
+      gamepaused,
+      gameend,
+      winner,
+      stake,
+      playerlimit,
+      roomname
+    );
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -391,9 +603,23 @@ library BattleMap {
     uint32 height,
     bool gamepaused,
     bool gameend,
-    bytes32 winner
+    bytes32 winner,
+    uint256 stake,
+    uint32 playerlimit,
+    string memory roomname
   ) internal {
-    bytes memory _data = encode(gamecreatedby, gamestart, width, height, gamepaused, gameend, winner);
+    bytes memory _data = encode(
+      gamecreatedby,
+      gamestart,
+      width,
+      height,
+      gamepaused,
+      gameend,
+      winner,
+      stake,
+      playerlimit,
+      roomname
+    );
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -406,7 +632,7 @@ library BattleMap {
     bytes memory _blob
   )
     internal
-    pure
+    view
     returns (
       bytes32 gamecreatedby,
       bool gamestart,
@@ -414,9 +640,15 @@ library BattleMap {
       uint32 height,
       bool gamepaused,
       bool gameend,
-      bytes32 winner
+      bytes32 winner,
+      uint256 stake,
+      uint32 playerlimit,
+      string memory roomname
     )
   {
+    // 111 is the total byte length of static data
+    PackedCounter _encodedLengths = PackedCounter.wrap(Bytes.slice32(_blob, 111));
+
     gamecreatedby = (Bytes.slice32(_blob, 0));
 
     gamestart = (_toBool(uint8(Bytes.slice1(_blob, 32))));
@@ -430,6 +662,21 @@ library BattleMap {
     gameend = (_toBool(uint8(Bytes.slice1(_blob, 42))));
 
     winner = (Bytes.slice32(_blob, 43));
+
+    stake = (uint256(Bytes.slice32(_blob, 75)));
+
+    playerlimit = (uint32(Bytes.slice4(_blob, 107)));
+
+    // Store trims the blob if dynamic fields are all empty
+    if (_blob.length > 111) {
+      uint256 _start;
+      // skip static data length + dynamic lengths word
+      uint256 _end = 143;
+
+      _start = _end;
+      _end += _encodedLengths.atIndex(0);
+      roomname = (string(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
+    }
   }
 
   /** Tightly pack full data using this table's schema */
@@ -440,9 +687,29 @@ library BattleMap {
     uint32 height,
     bool gamepaused,
     bool gameend,
-    bytes32 winner
+    bytes32 winner,
+    uint256 stake,
+    uint32 playerlimit,
+    string memory roomname
   ) internal view returns (bytes memory) {
-    return abi.encodePacked(gamecreatedby, gamestart, width, height, gamepaused, gameend, winner);
+    uint40[] memory _counters = new uint40[](1);
+    _counters[0] = uint40(bytes(roomname).length);
+    PackedCounter _encodedLengths = PackedCounterLib.pack(_counters);
+
+    return
+      abi.encodePacked(
+        gamecreatedby,
+        gamestart,
+        width,
+        height,
+        gamepaused,
+        gameend,
+        winner,
+        stake,
+        playerlimit,
+        _encodedLengths.unwrap(),
+        bytes((roomname))
+      );
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

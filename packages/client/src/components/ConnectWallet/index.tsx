@@ -12,7 +12,7 @@ const ConnectWallet = () => {
     const { disconnect } = useDisconnect()
 
     const shortAddress = addressShortener(address)
-
+    
     const handleConnect = () => {
         !isConnected ? connect() : disconnect();
     }

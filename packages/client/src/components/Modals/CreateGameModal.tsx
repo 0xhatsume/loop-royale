@@ -3,13 +3,15 @@ import Modal from './Modal';
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { createWorldModalAtom } from '../../store';
 import { useMUD } from '../../MUDContext';
-
+import { useAccount } from 'wagmi';
+import {toBn} from "evm-bn";
 
 const CreateGameModal = () => {
 
     const {
         systemCalls: { createGame },
     } = useMUD();
+    const { address, isConnected } = useAccount();
 
     const [worldModalVisible, setWorldModalVisible] = useAtom(createWorldModalAtom);
 
@@ -20,8 +22,15 @@ const CreateGameModal = () => {
         const boardwidth = e.currentTarget.boardwidth.value;
         const gameplayernums = e.currentTarget.gameplayernums.value;
         const minstake = e.currentTarget.minstake.value;
-
-        createGame(parseInt(boardwidth),parseInt(boardheight)).then(
+        // console.log(
+        //     ethers.BigNumber.from(parseInt(minstake*1000)).mul(
+        //         ethers.BigNumber.from(10).pow(15)
+        //     )
+        //     );
+        createGame(parseInt(boardwidth),parseInt(boardheight), address,
+        toBn(parseFloat(minstake).toFixed(5)), 
+        parseInt(gameplayernums), roomname).then(
+        ).then(
             setWorldModalVisible(false)
         )
     }
@@ -107,14 +116,14 @@ const CreateGameModal = () => {
                     ETH</span>
                     </div>
                 
-                <button className="
-                w-4/5 p-2 mt-4 mb-2
-                text-white
-                bg-orange-600 hover:bg-orange-400
+                <button className={`w-4/5 p-2 mt-4 mb-2
+                text-white 
+                ${isConnected ? "bg-orange-600":"bg-red-400"} 
+                hover:bg-orange-400
                 border rounded-lg border-gray-800
-                "
+                `}
                 type="submit"
-                >Create Room</button>
+                >{isConnected?"Create Room":"Connect Wallet To Create Game"}</button>
 
 
             </form>

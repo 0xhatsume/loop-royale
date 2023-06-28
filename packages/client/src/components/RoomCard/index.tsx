@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useMUD } from '../../MUDContext';
-import { useComponentValue } from "@latticexyz/react";
+//import { useComponentValue } from "@latticexyz/react";
 
-const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) => {
+const RoomCard = ({entity, roomNum, roomName, stake, format, host, players, status}) => {
   const { 
     components: { BattleMap },
   } = useMUD();
 
-  const {gamestart} = useComponentValue(BattleMap, entity);
+  //const {gamestart} = useComponentValue(BattleMap, entity);
 
   return (
     
@@ -22,9 +22,10 @@ const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) =>
     border border-gray-400
     ">
       <div className="w-[5rem] px-2">{roomNum??"x"}</div>
-      <div className="w-[15rem] 
+      <div className="w-[12rem] 
       text-left pl-4">
           {roomName??"the unknown"}</div>
+      <div className="w-[7rem]">{stake??"???"}</div>
       <div className="w-[7rem]">{format??"? x ?"}</div>
       <div className="w-[11.5rem]">{host??"anon"}</div>
       <div className="w-[7rem]">{players??"?/?"}</div>
@@ -35,9 +36,9 @@ const RoomCard = ({entity, roomNum, roomName, format, host, players, status}) =>
           bg-orange-700 hover:bg-orange-400
           border 
           hover: border-2 hover:border-orange-700
-          w-[8rem] py-1 text-white
+          w-[7.5rem] py-1 text-white
         ">
-          {gamestart ? "Game in Progress" : "Join Game"}
+          {status ? "Game in Progress" : "Join Game"}
           </Link>
       </div>
     

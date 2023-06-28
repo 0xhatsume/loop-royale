@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useEntityQuery } from '@latticexyz/react';
-import { Entity, Has, getComponentValueStrict, getComponentValue } from "@latticexyz/recs";
+import { Entity, runQuery, Has, HasValue, NotValue, getComponentValueStrict, getComponentValue } from "@latticexyz/recs";
 import { useMUD } from '../../MUDContext';
 import RoomCard from '../../components/RoomCard';
 import ChatBox from '../../components/ChatBox/ChatBox';
@@ -12,6 +12,8 @@ import { firebase, db } from '../../firebase.config';
 import { addDoc, collection, serverTimestamp, 
   onSnapshot, query, where } from 'firebase/firestore';
 import { useAccount } from 'wagmi';
+import { DECIMAL } from '../../constants';
+import {toBn, fromBn} from "evm-bn";
 
 const Home = () => {
   const {
@@ -22,9 +24,12 @@ const Home = () => {
     return addressShortener(ethers.utils.hexStripZeros(gamecreatedby, 32))
   }
   
-  const battleMaps = useEntityQuery([Has(BattleMap)]).map((entity) => {
-    return {...getComponentValue(BattleMap, entity), 
+  const battleMaps = useEntityQuery([Has(BattleMap), NotValue(BattleMap, {gameend: true})]).map((entity) => {
+    const b = getComponentValue(BattleMap, entity)
+          
+    return {...b, 
               entity,
+              stake: fromBn(b?.stake),
               roomNumber: parseInt(entity)
             }
   });
@@ -62,7 +67,7 @@ const Home = () => {
 
     setNewMsg('');
     }
-
+  
   return (
     <div className="w-full h-full
     flex justify-center items-start
@@ -79,11 +84,13 @@ const Home = () => {
         <div className="w-full
         flex flex-row justify-between items-center">
           <div className="mx-2 text-lg font-bold">Game Lobby</div>
-          <button className="m-2 mb-4 
-            bg-orange-500 hover:bg-orange-700
-            border rounded-lg p-2"
-            onClick={() => setCreateGameModalVisible(true)}
-            >Create Game</button>
+          <button className={`m-2 mb-4 
+            ${isConnected?"bg-orange-500":"bg-red-400"} hover:bg-orange-700
+            border rounded-lg p-2`}
+            onClick={() => {
+              return isConnected?
+              setCreateGameModalVisible(true): null }}
+            >{isConnected ? "Create Game": "Connect Wallet to Create Game"}</button>
         </div>
 
           {/* room screen */}
@@ -98,11 +105,12 @@ const Home = () => {
               border rounded-t-lg 
             ">
               <div className="w-[5rem] px-2">Game</div>
-              <div className="w-[15rem] text-left pl-4">Game Name</div>
+              <div className="w-[12rem] text-left pl-4">Game Name</div>
+              <div className="w-[7rem]">Stake</div>
               <div className="w-[7rem]">Format</div>
               <div className="w-[11.5rem]">Host</div>
               <div className="w-[7rem]">Players</div>
-              <div className="w-[13rem]">Status</div>
+              <div className="flex flex-grow justify-center">Status</div>
             </div>
 
             {/* room cards */}
@@ -119,11 +127,12 @@ const Home = () => {
                     key={bm.entity}
                     entity={bm.entity}
                     roomNum={bm.roomNumber}
-                    roomName={null}
+                    roomName={bm.roomname}
+                    stake= {bm.stake}
                     format={`${bm.width} x ${bm.height}`}
                     host={gameCreator(bm.gamecreatedby)}
-                    players={null}
-                    status={null}
+                    players={bm.playerlimit}
+                    status={bm.gamestart}
                   />)
                 })
               }

@@ -17,7 +17,10 @@ export default mudConfig({
         height: "uint32",
         gamepaused: "bool",
         gameend: "bool",
-        winner:"bytes32"
+        winner:"bytes32",
+        stake: "uint256",
+        playerlimit: "uint32",
+        roomname: "string",
       }
     },
 
@@ -46,7 +49,7 @@ export default mudConfig({
         mapId: "bytes32", //for easy search
         player: "bytes32", //for easy search
         ft: "uint32",
-        stake: "uint32",
+        stake: "uint256",
         dead: "bool"
       },
     },

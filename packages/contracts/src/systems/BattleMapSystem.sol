@@ -16,7 +16,7 @@ import { ItemType } from "../codegen/Types.sol";
 
 contract BattleMapSystem is System {
     //event GameCreated(uint256 battleMapId, uint32 width, uint32 height);
-    function createGame(uint32 width, uint32 height, address playerAddress) public {
+    function createGame(uint32 width, uint32 height, address playerAddress, uint256 stake, uint32 playerlimit, string memory roomname) public {
 
         // create entity keys
         bytes32 player = addressToEntityKey(address(playerAddress)); //short term fix
@@ -26,14 +26,16 @@ contract BattleMapSystem is System {
 
         // create map
         BattleMap.set(battleMapId, player, false, 
-            width, height, false, false, bytes32(0));
+            width, height, false, false, bytes32(0),
+            stake, playerlimit, roomname
+            );
         
         // create player
         BmPlayer.set(playerEntity, 
                 battleMapId,
                 player,
                 100,    // health
-                10,     // stake
+                stake,     // stake
                 false // dead
                 );
 
@@ -48,7 +50,7 @@ contract BattleMapSystem is System {
         BmPosition.set(playerEntity, 5, 5);
     }
 
-    function registerPlayer(bytes32 mapId, uint32 stake, address playerAddress) public {
+    function registerPlayer(bytes32 mapId, uint256 stake, address playerAddress) public {
         // create entity keys
         bytes32 player = addressToEntityKey(playerAddress); //short term fix
         //bytes32 player = addressToEntityKey(address(_msgSender()));
@@ -67,7 +69,7 @@ contract BattleMapSystem is System {
         MapMembers.push(mapId, playerEntity);
     }
 
-    function setStake(bytes32 mapId, uint32 stake, address playerAddress) public {
+    function setStake(bytes32 mapId, uint256 stake, address playerAddress) public {
         // create entity keys
         bytes32 player = addressToEntityKey(playerAddress); //short term fix
         //bytes32 player = addressToEntityKey(address(_msgSender()));
@@ -246,7 +248,7 @@ contract BattleMapSystem is System {
 
         // get map state
         (, bool gamestart, uint32 width, uint32 height,
-        bool gamepaused, bool gameend, 
+        bool gamepaused, bool gameend, ,,,
         ) = BattleMap.get(mapId);
         
         // check if game has started

@@ -17,6 +17,9 @@ export function defineContractComponents(world: World) {
           gamepaused: RecsType.Boolean,
           gameend: RecsType.Boolean,
           winner: RecsType.String,
+          stake: RecsType.BigInt,
+          playerlimit: RecsType.Number,
+          roomname: RecsType.String,
         },
         {
           metadata: {
@@ -66,7 +69,7 @@ export function defineContractComponents(world: World) {
           mapId: RecsType.String,
           player: RecsType.String,
           ft: RecsType.Number,
-          stake: RecsType.Number,
+          stake: RecsType.BigInt,
           dead: RecsType.Boolean,
         },
         {

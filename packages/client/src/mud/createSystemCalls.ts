@@ -3,7 +3,7 @@ import { uuid, awaitStreamValue } from "@latticexyz/utils";
 import { MonsterCatchResult } from "../monsterCatchResult";
 import { ClientComponents } from "./createClientComponents";
 import { SetupNetworkResult } from "./setupNetwork";
-import {ethers} from "ethers";
+import {ethers, BigNumber} from "ethers";
 import { padToBytes32 } from "../utils/byteutils";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
@@ -22,21 +22,18 @@ export function createSystemCalls(
       BmPosition,
   }: ClientComponents
 ) {
-  const createGame = async (width: number, height: number, address:string) => {
-
-    const playerAddress = defaultAbiCoder.encode(
-        ["address"],
-        [address]);
+  const createGame = async (width: number, height: number, address:string, 
+    stake:BigNumber, playerlimit: number, roomname: string) => {
+    //assume address is already correct length
     
-    const tx = await worldSend("createGame", [width, height, playerAddress]);
+    const tx = await worldSend("createGame", [width, height, address,
+      stake.toString(), playerlimit, roomname
+    ]);
     //await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
   }
 
   const moveTo = async (mapId: string, inputX: number, inputY: number, address:string) => {
-    const playerAddress = defaultAbiCoder.encode(
-      ["address"],
-      [address]);
-
+    // assume address is already correct length
     // assume mapId is padded to 32 bytes
     if (!playerEntity) {
       throw new Error("no player");
@@ -59,7 +56,7 @@ export function createSystemCalls(
     });
 
     try {
-      const tx = await worldSend("move", [mapIdBytes32, inputX, inputY, playerAddress]);
+      const tx = await worldSend("move", [mapIdBytes32, inputX, inputY, address]);
       await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
     } finally {
       BmPosition.removeOverride(positionId);
@@ -67,10 +64,7 @@ export function createSystemCalls(
   };
 
   const moveBy = async (mapId: string, deltaX: number, deltaY: number, address: string) => {
-    const playerAddress = defaultAbiCoder.encode(
-      ["address"],
-      [address]);
-
+    // assume address is already correct length
     // assume mapId is padded to 32 bytes
     if (!playerEntity) {
       throw new Error("no player");
