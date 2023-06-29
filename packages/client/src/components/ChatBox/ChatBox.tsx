@@ -59,7 +59,7 @@ const ChatBox = ({room, msgLimit=100}) => {
         if(chatBoxRef.current){
             chatBoxRef.current.scrollTop = 0;
         }
-    }, [messages])
+    }, [messages, chatBoxRef])
     
     return (
         <div className="w-full h-full bg-slate-700/20
@@ -91,7 +91,17 @@ const ChatBox = ({room, msgLimit=100}) => {
                         (msg.user==address?
                         "text-orange-400"
                         : ""): ""
-                        }`}>{addressShortener(msg.user)}: </span>
+                        }`}
+                        
+                        style={{
+                            color:`${isConnected?
+                                (msg.user==address?
+                                    "orange"
+                                    : "")
+                                :"white"}`
+                        }}
+
+                        >{addressShortener(msg.user)}: </span>
                                 <span className="mx-2">{msg.text}</span>
                                 </div>
                     )}

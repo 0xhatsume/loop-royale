@@ -26,7 +26,7 @@ library BmPlayer {
     SchemaType[] memory _schema = new SchemaType[](5);
     _schema[0] = SchemaType.BYTES32;
     _schema[1] = SchemaType.BYTES32;
-    _schema[2] = SchemaType.UINT32;
+    _schema[2] = SchemaType.INT32;
     _schema[3] = SchemaType.UINT256;
     _schema[4] = SchemaType.BOOL;
 
@@ -142,25 +142,25 @@ library BmPlayer {
   }
 
   /** Get ft */
-  function getFt(bytes32 key) internal view returns (uint32 ft) {
+  function getFt(bytes32 key) internal view returns (int32 ft) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
-    return (uint32(Bytes.slice4(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Get ft (using the specified store) */
-  function getFt(IStore _store, bytes32 key) internal view returns (uint32 ft) {
+  function getFt(IStore _store, bytes32 key) internal view returns (int32 ft) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
-    return (uint32(Bytes.slice4(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Set ft */
-  function setFt(bytes32 key, uint32 ft) internal {
+  function setFt(bytes32 key, int32 ft) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -168,7 +168,7 @@ library BmPlayer {
   }
 
   /** Set ft (using the specified store) */
-  function setFt(IStore _store, bytes32 key, uint32 ft) internal {
+  function setFt(IStore _store, bytes32 key, int32 ft) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -244,7 +244,7 @@ library BmPlayer {
   }
 
   /** Get the full data */
-  function get(bytes32 key) internal view returns (bytes32 mapId, bytes32 player, uint32 ft, uint256 stake, bool dead) {
+  function get(bytes32 key) internal view returns (bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -256,7 +256,7 @@ library BmPlayer {
   function get(
     IStore _store,
     bytes32 key
-  ) internal view returns (bytes32 mapId, bytes32 player, uint32 ft, uint256 stake, bool dead) {
+  ) internal view returns (bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -265,7 +265,7 @@ library BmPlayer {
   }
 
   /** Set the full data using individual values */
-  function set(bytes32 key, bytes32 mapId, bytes32 player, uint32 ft, uint256 stake, bool dead) internal {
+  function set(bytes32 key, bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) internal {
     bytes memory _data = encode(mapId, player, ft, stake, dead);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -275,15 +275,7 @@ library BmPlayer {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(
-    IStore _store,
-    bytes32 key,
-    bytes32 mapId,
-    bytes32 player,
-    uint32 ft,
-    uint256 stake,
-    bool dead
-  ) internal {
+  function set(IStore _store, bytes32 key, bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) internal {
     bytes memory _data = encode(mapId, player, ft, stake, dead);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -295,12 +287,12 @@ library BmPlayer {
   /** Decode the tightly packed blob using this table's schema */
   function decode(
     bytes memory _blob
-  ) internal pure returns (bytes32 mapId, bytes32 player, uint32 ft, uint256 stake, bool dead) {
+  ) internal pure returns (bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) {
     mapId = (Bytes.slice32(_blob, 0));
 
     player = (Bytes.slice32(_blob, 32));
 
-    ft = (uint32(Bytes.slice4(_blob, 64)));
+    ft = (int32(uint32(Bytes.slice4(_blob, 64))));
 
     stake = (uint256(Bytes.slice32(_blob, 68)));
 
@@ -311,7 +303,7 @@ library BmPlayer {
   function encode(
     bytes32 mapId,
     bytes32 player,
-    uint32 ft,
+    int32 ft,
     uint256 stake,
     bool dead
   ) internal view returns (bytes memory) {

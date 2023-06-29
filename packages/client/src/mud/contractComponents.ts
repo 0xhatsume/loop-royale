@@ -52,6 +52,8 @@ export function defineContractComponents(world: World) {
           itemtype: RecsType.Number,
           buff: RecsType.Number,
           mapId: RecsType.String,
+          x: RecsType.Number,
+          y: RecsType.Number,
         },
         {
           metadata: {
@@ -98,22 +100,6 @@ export function defineContractComponents(world: World) {
     })(),
     SpawnPos: (() => {
       const tableId = new TableId("", "SpawnPos");
-      return defineComponent(
-        world,
-        {
-          x: RecsType.NumberArray,
-          y: RecsType.NumberArray,
-        },
-        {
-          metadata: {
-            contractId: tableId.toHexString(),
-            tableId: tableId.toString(),
-          },
-        }
-      );
-    })(),
-    ItemPos: (() => {
-      const tableId = new TableId("", "ItemPos");
       return defineComponent(
         world,
         {

@@ -14,10 +14,6 @@ export function createSystemCalls(
   { playerEntity, singletonEntity, worldSend, txReduced$ }: SetupNetworkResult,
   {
       GameMap,
-    // Encounter,
-    // MapConfig,
-    // MonsterCatchAttempt,
-    // Obstruction,
       BmPlayer,
       BmPosition,
   }: ClientComponents
@@ -29,7 +25,31 @@ export function createSystemCalls(
     const tx = await worldSend("createGame", [width, height, address,
       stake.toString(), playerlimit, roomname
     ]);
-    //await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
+    await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
+  }
+
+  const registerPlayer = async (mapId: string, stake:string, address: string) => {
+    // assume address is already correct length
+    // assume mapId is padded to 32 bytes
+    if (!playerEntity) {
+      throw new Error("no player");
+    }
+
+    const mapIdBytes32 = defaultAbiCoder.encode(
+      ["bytes32"],
+      [mapId]);
+
+    const tx = await worldSend("registerPlayer", [mapIdBytes32, stake, address]);
+    await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
+  }
+
+  const startGame = async (mapId: string, address: string) => {
+    const mapIdBytes32 = defaultAbiCoder.encode(
+      ["bytes32"],
+      [mapId]);
+    
+    const tx = await worldSend("startGame", [mapIdBytes32, address]);
+    await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
   }
 
   const moveTo = async (mapId: string, inputX: number, inputY: number, address:string) => {
@@ -56,7 +76,7 @@ export function createSystemCalls(
     });
 
     try {
-      const tx = await worldSend("move", [mapIdBytes32, inputX, inputY, address]);
+      const tx = await worldSend("sMove", [mapIdBytes32, inputX, inputY, address]);
       await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
     } finally {
       BmPosition.removeOverride(positionId);
@@ -91,6 +111,8 @@ export function createSystemCalls(
 
   return {
     createGame,
+    registerPlayer,
+    startGame,
     moveTo,
     moveBy,
   };

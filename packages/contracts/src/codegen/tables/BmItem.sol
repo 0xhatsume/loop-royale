@@ -26,10 +26,12 @@ bytes32 constant BmItemTableId = _tableId;
 library BmItem {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](3);
+    SchemaType[] memory _schema = new SchemaType[](5);
     _schema[0] = SchemaType.UINT8;
     _schema[1] = SchemaType.INT32;
     _schema[2] = SchemaType.BYTES32;
+    _schema[3] = SchemaType.UINT32;
+    _schema[4] = SchemaType.UINT32;
 
     return SchemaLib.encode(_schema);
   }
@@ -43,10 +45,12 @@ library BmItem {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](3);
+    string[] memory _fieldNames = new string[](5);
     _fieldNames[0] = "itemtype";
     _fieldNames[1] = "buff";
     _fieldNames[2] = "mapId";
+    _fieldNames[3] = "x";
+    _fieldNames[4] = "y";
     return ("BmItem", _fieldNames);
   }
 
@@ -174,8 +178,76 @@ library BmItem {
     _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((mapId)));
   }
 
+  /** Get x */
+  function getX(bytes32 key) internal view returns (uint32 x) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Get x (using the specified store) */
+  function getX(IStore _store, bytes32 key) internal view returns (uint32 x) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 3);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Set x */
+  function setX(bytes32 key, uint32 x) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((x)));
+  }
+
+  /** Set x (using the specified store) */
+  function setX(IStore _store, bytes32 key, uint32 x) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((x)));
+  }
+
+  /** Get y */
+  function getY(bytes32 key) internal view returns (uint32 y) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 4);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Get y (using the specified store) */
+  function getY(IStore _store, bytes32 key) internal view returns (uint32 y) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 4);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Set y */
+  function setY(bytes32 key, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 4, abi.encodePacked((y)));
+  }
+
+  /** Set y (using the specified store) */
+  function setY(IStore _store, bytes32 key, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 4, abi.encodePacked((y)));
+  }
+
   /** Get the full data */
-  function get(bytes32 key) internal view returns (ItemType itemtype, int32 buff, bytes32 mapId) {
+  function get(bytes32 key) internal view returns (ItemType itemtype, int32 buff, bytes32 mapId, uint32 x, uint32 y) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -184,7 +256,10 @@ library BmItem {
   }
 
   /** Get the full data (using the specified store) */
-  function get(IStore _store, bytes32 key) internal view returns (ItemType itemtype, int32 buff, bytes32 mapId) {
+  function get(
+    IStore _store,
+    bytes32 key
+  ) internal view returns (ItemType itemtype, int32 buff, bytes32 mapId, uint32 x, uint32 y) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -193,8 +268,8 @@ library BmItem {
   }
 
   /** Set the full data using individual values */
-  function set(bytes32 key, ItemType itemtype, int32 buff, bytes32 mapId) internal {
-    bytes memory _data = encode(itemtype, buff, mapId);
+  function set(bytes32 key, ItemType itemtype, int32 buff, bytes32 mapId, uint32 x, uint32 y) internal {
+    bytes memory _data = encode(itemtype, buff, mapId, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -203,8 +278,8 @@ library BmItem {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, bytes32 key, ItemType itemtype, int32 buff, bytes32 mapId) internal {
-    bytes memory _data = encode(itemtype, buff, mapId);
+  function set(IStore _store, bytes32 key, ItemType itemtype, int32 buff, bytes32 mapId, uint32 x, uint32 y) internal {
+    bytes memory _data = encode(itemtype, buff, mapId, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -213,17 +288,29 @@ library BmItem {
   }
 
   /** Decode the tightly packed blob using this table's schema */
-  function decode(bytes memory _blob) internal pure returns (ItemType itemtype, int32 buff, bytes32 mapId) {
+  function decode(
+    bytes memory _blob
+  ) internal pure returns (ItemType itemtype, int32 buff, bytes32 mapId, uint32 x, uint32 y) {
     itemtype = ItemType(uint8(Bytes.slice1(_blob, 0)));
 
     buff = (int32(uint32(Bytes.slice4(_blob, 1))));
 
     mapId = (Bytes.slice32(_blob, 5));
+
+    x = (uint32(Bytes.slice4(_blob, 37)));
+
+    y = (uint32(Bytes.slice4(_blob, 41)));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(ItemType itemtype, int32 buff, bytes32 mapId) internal view returns (bytes memory) {
-    return abi.encodePacked(itemtype, buff, mapId);
+  function encode(
+    ItemType itemtype,
+    int32 buff,
+    bytes32 mapId,
+    uint32 x,
+    uint32 y
+  ) internal view returns (bytes memory) {
+    return abi.encodePacked(itemtype, buff, mapId, x, y);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

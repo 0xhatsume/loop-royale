@@ -39,6 +39,8 @@ export default mudConfig({
         itemtype: "ItemType",
         buff: "int32",
         mapId: "bytes32", //for easy search
+        x: "uint32",
+        y: "uint32",
       },
     },
 
@@ -48,7 +50,7 @@ export default mudConfig({
       schema: {
         mapId: "bytes32", //for easy search
         player: "bytes32", //for easy search
-        ft: "uint32",
+        ft: "int32",
         stake: "uint256",
         dead: "bool"
       },
@@ -71,13 +73,13 @@ export default mudConfig({
       }
     },
 
-    ItemPos: {
-      dataStruct: false,
-      schema: {
-        x: "uint32[]",
-        y: "uint32[]",
-      }
-    },
+    // ItemPos: {
+    //   dataStruct: false,
+    //   schema: {
+    //     x: "uint32[]",
+    //     y: "uint32[]",
+    //   }
+    // },
 
     BmObstruction: "bool", // key is mapId & x & y to bytes
 
@@ -96,7 +98,8 @@ export default mudConfig({
   {
     name: "KeysWithValueModule",
     root: true,
-    args: [resolveTableId("BattleMap")],
+    args: [resolveTableId("BattleMap"), 
+    resolveTableId("BmPosition")],
   }
   ],
 });

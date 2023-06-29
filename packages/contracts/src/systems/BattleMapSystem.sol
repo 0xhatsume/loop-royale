@@ -4,199 +4,20 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { BattleMap, BmPlayer, 
     BmItem,
     MapMembers,
-    SpawnPos, ItemPos,
+    SpawnPos, 
+    //ItemPos,
     BmPosition, BmObstruction } from "../codegen/Tables.sol";
 import { addressToEntityKey } from "../addressToEntityKey.sol";
 import { mapAndpositionToEntityKey } from "../mapAndpositionToEntityKey.sol";
 import { mapAndentityToEntityKey } from "../mapAndentityToEntityKey.sol";
 import { getUniqueEntity} from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
+import { getKeysWithValue } from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
 
 // Import user types
 import { ItemType } from "../codegen/Types.sol";
 
 contract BattleMapSystem is System {
     //event GameCreated(uint256 battleMapId, uint32 width, uint32 height);
-    function createGame(uint32 width, uint32 height, address playerAddress, uint256 stake, uint32 playerlimit, string memory roomname) public {
-
-        // create entity keys
-        bytes32 player = addressToEntityKey(address(playerAddress)); //short term fix
-        //bytes32 player = addressToEntityKey(address(_msgSender()));
-        bytes32 battleMapId = getUniqueEntity();
-        bytes32 playerEntity = mapAndentityToEntityKey(battleMapId, player);
-
-        // create map
-        BattleMap.set(battleMapId, player, false, 
-            width, height, false, false, bytes32(0),
-            stake, playerlimit, roomname
-            );
-        
-        // create player
-        BmPlayer.set(playerEntity, 
-                battleMapId,
-                player,
-                100,    // health
-                stake,     // stake
-                false // dead
-                );
-
-        //emit GameCreated(uint256(battleMapId), width, height);
-
-        // set map players
-        bytes32[] memory players = new bytes32[](1);
-        players[0] = player;
-        MapMembers.set(battleMapId, players);
-
-        // set player position
-        BmPosition.set(playerEntity, 5, 5);
-    }
-
-    function registerPlayer(bytes32 mapId, uint256 stake, address playerAddress) public {
-        // create entity keys
-        bytes32 player = addressToEntityKey(playerAddress); //short term fix
-        //bytes32 player = addressToEntityKey(address(_msgSender()));
-        bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
-
-        // create player
-        BmPlayer.set(playerEntity, 
-                mapId,
-                player,
-                100,    // health
-                stake,     // stake
-                false // dead
-                );
-
-        // set map players
-        MapMembers.push(mapId, playerEntity);
-    }
-
-    function setStake(bytes32 mapId, uint256 stake, address playerAddress) public {
-        // create entity keys
-        bytes32 player = addressToEntityKey(playerAddress); //short term fix
-        //bytes32 player = addressToEntityKey(address(_msgSender()));
-        bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
-
-        // require player to be in map
-        require(BmPlayer.getPlayer(playerEntity)==player,
-        "only players in map can set own stake");
-
-        // cannot set stake when game has started
-        require(!BattleMap.getGamestart(mapId),
-        "cannot set stake when game has started");
-
-        // set stake
-        BmPlayer.setStake(playerEntity, stake);
-
-    }
-
-    function spawnPlayers(bytes32 mapId) public {
-        // create entity keys
-        // bytes32 player = addressToEntityKey(address(_msgSender()));
-        // bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
-
-        // get map dimensions
-        uint32 width = BattleMap.getWidth(mapId);
-        uint32 height = BattleMap.getHeight(mapId);
-
-        // get map players
-        bytes32[] memory players = MapMembers.get(mapId);
-
-        // for each player, set their position
-        for (uint i=0; i<players.length; i++) {
-            // get player entity
-            bytes32 playerEntity = players[i];
-
-            // get a random value for x and y within map dimensions
-            uint32 x = uint32(uint256(
-                keccak256(abi.encodePacked(
-                    width, playerEntity,
-                    blockhash(block.number - 1), block.difficulty, i))
-                ) % width);
-            uint32 y = uint32(uint256(
-                keccak256(abi.encodePacked(
-                    height, playerEntity,
-                    blockhash(block.number - 1), block.difficulty, i))
-                ) % height);
-            
-            // set player position
-            BmPosition.set(playerEntity, x, y);
-        }
-    }
-
-    function spawnItems(bytes32 mapId) public {
-        require(BattleMap.getGamestart(mapId),
-        "game not started");
-
-        // get number of players on map
-        uint32 numPlayers = uint32(MapMembers.get(mapId).length);
-        uint32 numItemsToMaintain = numPlayers - 1;
-        numItemsToMaintain = numItemsToMaintain < 1 ? 1 : numItemsToMaintain;
-
-        // get number of items to spawn
-        uint32 numItemsToSpawn = numItemsToMaintain - uint32(
-                                        SpawnPos.getX(mapId).length);
-        numItemsToSpawn = numItemsToSpawn < 0 ? 0 : numItemsToSpawn;
-
-        require(numItemsToSpawn > 0,"nothing to spawn");
-
-        // get map dimensions
-        uint32 width = BattleMap.getWidth(mapId);
-        uint32 height = BattleMap.getHeight(mapId);
-
-        for (uint i=0; i<numItemsToSpawn; i++) {
-            
-            uint256 rand = uint256(
-                keccak256(abi.encodePacked(
-                    numPlayers, mapId,
-                    blockhash(block.number - 1), block.difficulty, i))
-                );
-            
-            // get a random value for x and y within map dimensions
-            uint32 x = uint32(uint256(
-                keccak256(abi.encodePacked(
-                    width, mapId,
-                    blockhash(block.number - 1), block.difficulty, i))
-                ) % width);
-            uint32 y = uint32(uint256(
-                keccak256(abi.encodePacked(
-                    height, mapId,
-                    blockhash(block.number - 1), block.difficulty, i))
-                ) % height);
-            
-            // create item
-            bytes32 itemId = mapAndpositionToEntityKey(mapId, x, y);
-            BmItem.set(itemId, 
-                        ItemType.PowerUp, 
-                        rand%2==0 ? int32(-50) : int32(50),
-                        mapId
-            );
-
-            // append item position to store
-            ItemPos.pushX(mapId, x);
-            ItemPos.pushY(mapId, y);
-
-        }
-    }
-
-    function startGame(bytes32 mapId, address playerAddress) public {
-        // create entity keys
-        bytes32 player = addressToEntityKey(playerAddress); //short term fix
-        //bytes32 player = addressToEntityKey(address(_msgSender()));
-
-        // check if player is owner
-        require(BattleMap.getGamecreatedby(mapId) == player,
-        "only map creator can start game");
-
-        // check if game has started
-        require(!BattleMap.getGamestart(mapId),
-        "game already started");
-
-        // check if game has ended
-        require(!BattleMap.getGameend(mapId),
-        "cannot start game that has ended");
-
-        // start game
-        BattleMap.setGamestart(mapId, true);
-    }
 
     function pauseGame(bytes32 mapId, address playerAddress) public {
         // create entity keys
@@ -240,7 +61,90 @@ contract BattleMapSystem is System {
         BattleMap.setGameend(mapId, true);
     }
 
-    function move(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public {
+    function move(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public returns (bool){
+        // get player entity key
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
+        bytes32 positionkey = mapAndpositionToEntityKey(mapId, x, y);
+
+        // check if move allowed
+        require(_checkMoveAllowed(mapId, x, y, playerAddress), "move not allowed");
+        
+        // check if reached any item
+        (bool itemExists, int32 buff) = checkItemExists(mapId, x, y);
+        if (itemExists) {
+            // get player current buff
+            int32 currentFt = BmPlayer.getFt(playerEntity);
+            // update player buff
+            BmPlayer.setFt(playerEntity, currentFt+ buff);
+            // delete item
+            BmItem.deleteRecord(positionkey);
+        }
+
+        // get map players
+        bytes32[] memory playerEntities = MapMembers.get(mapId);
+
+        // loop through playerEntities to check for battle
+        for (uint i = 0; i < playerEntities.length; i++) {
+            
+            // check if player is not self
+            if(playerEntities[i] != playerEntity){
+                (uint32 playerX, uint32 playerY) = BmPosition.get(playerEntities[i]);
+
+                // check if other alive player is at new position then battle
+                if (playerX == x && playerY == y && !BmPlayer.getDead(playerEntities[i])) {
+
+                    // if player is winner, set player position (updating BattleFts returns winner)
+                    if (playerEntity == _updateBattleFts(mapId, playerEntity, playerEntities[i]))
+                    {
+                        // set player position if there is no battle
+                        BmPosition.set(playerEntity, x, y);
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // set player position if there is no battle
+        BmPosition.set(playerEntity, x, y);
+        return true;
+    }
+
+    function sMove(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public {
+        // get player entity key
+        bytes32 player = addressToEntityKey(playerAddress); //short term fix
+        //bytes32 player = addressToEntityKey(address(_msgSender()));
+        bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
+        //bytes32 positionkey = mapAndpositionToEntityKey(mapId, x, y);
+
+        // check if move allowed
+        //require(_checkMoveAllowed(mapId, x, y, playerAddress), "move not allowed");
+        // set player position if there is no battle
+        BmPosition.set(playerEntity, x, y);
+    }
+    // function move(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public pure returns (bool){
+    //     //return _move(mapId, x, y, address(_msgSender()));
+    //     return _move(mapId, x, y, playerAddress); //short term fix
+    // }
+
+    function _updateBattleFts(bytes32 mapId, bytes32 playerEntity, bytes32 otherPlayerEntity) internal returns (bytes32){
+        // get winner
+        bytes32 winner = checkBattleResults(mapId, playerEntity, otherPlayerEntity);
+        // get loser
+        bytes32 loser = playerEntity == winner ? playerEntity : otherPlayerEntity;
+
+        // set winner new ft
+        BmPlayer.setFt(winner, BmPlayer.getFt(winner) + BmPlayer.getFt(loser));
+        // set loser new ft
+        BmPlayer.setFt(loser, 0);
+        // set loser dead status to true
+        BmPlayer.setDead(loser, true);
+
+        return winner;
+    }
+
+    function _checkMoveAllowed(bytes32 mapId, uint32 x, uint32 y, address playerAddress) internal view returns (bool){
         // get player entity key
         bytes32 player = addressToEntityKey(playerAddress); //short term fix
         //bytes32 player = addressToEntityKey(address(_msgSender()));
@@ -261,9 +165,7 @@ contract BattleMapSystem is System {
         require(!gameend, "game has ended");
 
         // get player current position
-        (uint32 fromX, uint32 fromY) = BmPosition.get(playerEntity);
-        require(distance(fromX, fromY, x, y) == 1, 
-            "can only move to adjacent spaces");
+        require(_checkDistanceAllowed(playerEntity,x,y), "can only move to adjacent spaces");
         
         // check for obstructions
         bytes32 positionkey = mapAndpositionToEntityKey(mapId, x, y);
@@ -274,17 +176,60 @@ contract BattleMapSystem is System {
         require(x < width && y < height && x >= 0 && y >= 0, 
             "cannot move outside map bounds");
 
-        // set player position
-        BmPosition.set(playerEntity, x, y);
+        return true;
+    }
 
-        // check for fights and powerups
+    function checkBattleResults(bytes32 mapId, bytes32 player1, bytes32 player2) public view returns (bytes32){
+        bytes32 player1Entity = mapAndentityToEntityKey(mapId, player1);
+        bytes32 player2Entity = mapAndentityToEntityKey(mapId, player2);
+
+        // get player1 ft
+        uint256 player1Ft = uint256(int256(BmPlayer.getFt(player1Entity)));
+        // get player2 ft
+        uint256 player2Ft = uint256(int256(BmPlayer.getFt(player2Entity)));
+
+        uint256 totalFt = player1Ft + player2Ft;
+
+        // create random number from 1 to 100
+        uint256 randomNumber = uint256(keccak256(abi.encodePacked(
+            mapId, player1Entity, player2Entity, totalFt,
+            block.timestamp, block.difficulty))) % 1e18 + 1;
+
+        uint256 player1Chance = _divide(player1Ft, totalFt) * 100;
+
+        // 
+        if (randomNumber <= player1Chance) {
+            return player1;
+        } else {
+            return player2;
+        }
 
     }
 
-    function distance(uint32 fromX, uint32 fromY, uint32 toX, uint32 toY) internal pure returns (uint32) {
+    function checkItemExists(bytes32 mapId, uint32 x, uint32 y) public view returns (bool, int32) {
+        bytes32 positionkey = mapAndpositionToEntityKey(mapId, x, y);
+        ( , int32 buff, bytes32 itemMapId, , ) = BmItem.get(positionkey);
+        if (mapId == itemMapId) {
+            return (true, buff);
+        } else {
+            return (false, 0);
+        }
+    }
+
+    function _checkDistanceAllowed(bytes32 playerEntity, uint32 toX, uint32 toY) internal view returns (bool) {
+        (uint32 fromX, uint32 fromY) = BmPosition.get(playerEntity);
+        return _distance(fromX, fromY, toX, toY) == 1;
+    }
+
+    function _distance(uint32 fromX, uint32 fromY, uint32 toX, uint32 toY) internal pure returns (uint32) {
         uint32 deltaX = fromX > toX ? fromX - toX : toX - fromX;
         uint32 deltaY = fromY > toY ? fromY - toY : toY - fromY;
         return deltaX + deltaY;
+    }
+
+    function _divide(uint256 a, uint256 b) internal pure returns(uint256) {
+        require(b != 0, "division by zero will result in infinity.");
+        return (a * 1e18) / b;
     }
 
     function deleteGame(bytes32 mapId, address playerAddress) public {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import { useGameKeyListener } from '../../hooks/useGameKeyListener';
 import { useMUD } from '../../MUDContext';
 import { useParams } from 'react-router-dom';
@@ -14,10 +14,12 @@ import { useComponentValue } from "@latticexyz/react";
 import { avatars } from '../../constants/assets';
 import { addressShortener } from '../../utils/addressShortener';
 import { useAccount } from 'wagmi';
+import {toBn} from "evm-bn";
 
 const GameRoom = () => {
   console.log("GameRoom Refresh")
-  const { components: { BattleMap, BmPlayer, BmPosition },
+  const { components: { BattleMap, BmPlayer, BmPosition, MapMembers },
+          systemCalls: { registerPlayer, startGame },
             network: { storeCache, playerEntity },
           } = useMUD();
   const params = useParams();
@@ -45,20 +47,20 @@ const GameRoom = () => {
   }
   
   const { address, isConnected } = useAccount();
-  const testPlayerEntity = "0x77510976e7f643cf6985fe78fe661fdf7f5ceb44"
+  //const testPlayerEntity = "0x77510976e7f643cf6985fe78fe661fdf7f5ceb44"
   const mapIdBytes32String = padToBytes32(mapId);
 
-  const playerEntityKeyBytes32String = ethers.utils.solidityKeccak256(
+  const playerEntityKeyBytes32String = isConnected ? ethers.utils.solidityKeccak256(
     ["bytes32", "bytes32"],
-    [mapIdBytes32String, padToBytes32(address)]
-  ) as Entity
+    [mapIdBytes32String, padToBytes32(address??"0x00")]
+  ) as Entity : null;
   
   useGameKeyListener(mapIdBytes32String);
   // get player position
   const playerPosition = useComponentValue(BmPosition, 
-    playerEntityKeyBytes32String
-  )
-  console.log(playerPosition)
+    playerEntityKeyBytes32String as Entity
+  ) ;
+  
   const rows = new Array(mapHeight).fill(0).map((_, i) => i);
   const columns = new Array(mapWidth).fill(0).map((_, i) => i); 
   
@@ -77,8 +79,8 @@ const GameRoom = () => {
   })]);
 
   const playerRanks = [...players].map((player) => {
-    //const p = useComponentValue(BmPlayer, player)
-    const p = getComponentValueStrict(BmPlayer, player) //just componentValue as the move hook will rerender
+    const p = useComponentValue(BmPlayer, player)
+    //const p = getComponentValueStrict(BmPlayer, player) //just componentValue as the move hook will rerender
     // when things change
     return {
       ...p,
@@ -88,6 +90,25 @@ const GameRoom = () => {
     }
   })
   
+  const [numPlayers, setSetNumberPlayers] = useState(playerRanks.length);
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(isConnected) {
+      console.log(toBn(e.currentTarget.stake.value).toString());
+      await registerPlayer(mapIdBytes32String, 
+        toBn(e.currentTarget.stake.value).toString(),
+        address as string
+        ).then(() => {
+        setSetNumberPlayers(numPlayers+1);
+      })
+    }
+
+  }
+
+  const mapMembers = useComponentValue(MapMembers, mapIdBytes32String as Entity);
+  console.log("mapMembers");
+  console.log(mapMembers);
+
   return (
     <div className="h-full w-full
     flex justify-end items-start
@@ -160,14 +181,22 @@ const GameRoom = () => {
             rounded-2xl border border-red-600
             hover:border-orange-800 hover:border-2
             hover:shadow-lg hover:shadow-red-500
-            ">
+            "
+            onClick={() => {
+              if (isConnected) {
+                startGame(mapIdBytes32String, address as string)
+              }
+            }}
+            >
               Owner Start Game
               </button>
 
-            <div className="h-3/4 w-1/5
-            mx-2 flex items-center overflow-hidden
+            <form className="h-3/4 w-1/5
+            mx-2 flex items-center overflow-y-auto
             border rounded-2xl border-amber-700
-            ">
+            "
+            onSubmit={handleSubmit}
+            >
                 <input type="number" defaultValue={0.1} 
                   name="stake" 
                   className="px-2
@@ -177,20 +206,25 @@ const GameRoom = () => {
                   text-center
                   rounded-l-2xl
                   "
+                  step={0.1}
                   />
                   <button className="
                   h-full w-1/2
                   bg-orange-700 hover:bg-orange-500
                   hover:font-bold
                   hover:border-2 hover:border-orange-600
+                  hover:shadow-lg hover:ring-lime-200
+                  text-left px-2 text-sm
                   "
+                  
+                  type="submit"
                   >
-                    Confirm Stake
+                    {isConnected? "Connect Wallet to Register for Game":"Confirm Stake and Enter Game"}
                     </button>
 
-            </div>
+            </form>
             <div className="
-            flex w-fit h-3/4 overflow-hidden
+            flex w-fit h-3/4 overflow-y-auto
             bg-yellow-600 hover:bg-yellow-400
             px-2 py-2
             rounded-2xl
