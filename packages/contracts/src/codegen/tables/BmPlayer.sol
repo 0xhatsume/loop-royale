@@ -20,15 +20,27 @@ import { PackedCounter, PackedCounterLib } from "@latticexyz/store/src/PackedCou
 bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("BmPlayer")));
 bytes32 constant BmPlayerTableId = _tableId;
 
+struct BmPlayerData {
+  bytes32 mapId;
+  bytes32 player;
+  int32 ft;
+  uint256 stake;
+  bool dead;
+  uint32 x;
+  uint32 y;
+}
+
 library BmPlayer {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](5);
+    SchemaType[] memory _schema = new SchemaType[](7);
     _schema[0] = SchemaType.BYTES32;
     _schema[1] = SchemaType.BYTES32;
     _schema[2] = SchemaType.INT32;
     _schema[3] = SchemaType.UINT256;
     _schema[4] = SchemaType.BOOL;
+    _schema[5] = SchemaType.UINT32;
+    _schema[6] = SchemaType.UINT32;
 
     return SchemaLib.encode(_schema);
   }
@@ -42,12 +54,14 @@ library BmPlayer {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](5);
+    string[] memory _fieldNames = new string[](7);
     _fieldNames[0] = "mapId";
     _fieldNames[1] = "player";
     _fieldNames[2] = "ft";
     _fieldNames[3] = "stake";
     _fieldNames[4] = "dead";
+    _fieldNames[5] = "x";
+    _fieldNames[6] = "y";
     return ("BmPlayer", _fieldNames);
   }
 
@@ -243,8 +257,76 @@ library BmPlayer {
     _store.setField(_tableId, _keyTuple, 4, abi.encodePacked((dead)));
   }
 
+  /** Get x */
+  function getX(bytes32 key) internal view returns (uint32 x) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 5);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Get x (using the specified store) */
+  function getX(IStore _store, bytes32 key) internal view returns (uint32 x) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 5);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Set x */
+  function setX(bytes32 key, uint32 x) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 5, abi.encodePacked((x)));
+  }
+
+  /** Set x (using the specified store) */
+  function setX(IStore _store, bytes32 key, uint32 x) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 5, abi.encodePacked((x)));
+  }
+
+  /** Get y */
+  function getY(bytes32 key) internal view returns (uint32 y) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 6);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Get y (using the specified store) */
+  function getY(IStore _store, bytes32 key) internal view returns (uint32 y) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 6);
+    return (uint32(Bytes.slice4(_blob, 0)));
+  }
+
+  /** Set y */
+  function setY(bytes32 key, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 6, abi.encodePacked((y)));
+  }
+
+  /** Set y (using the specified store) */
+  function setY(IStore _store, bytes32 key, uint32 y) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 6, abi.encodePacked((y)));
+  }
+
   /** Get the full data */
-  function get(bytes32 key) internal view returns (bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) {
+  function get(bytes32 key) internal view returns (BmPlayerData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -253,10 +335,7 @@ library BmPlayer {
   }
 
   /** Get the full data (using the specified store) */
-  function get(
-    IStore _store,
-    bytes32 key
-  ) internal view returns (bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) {
+  function get(IStore _store, bytes32 key) internal view returns (BmPlayerData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
@@ -265,8 +344,17 @@ library BmPlayer {
   }
 
   /** Set the full data using individual values */
-  function set(bytes32 key, bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) internal {
-    bytes memory _data = encode(mapId, player, ft, stake, dead);
+  function set(
+    bytes32 key,
+    bytes32 mapId,
+    bytes32 player,
+    int32 ft,
+    uint256 stake,
+    bool dead,
+    uint32 x,
+    uint32 y
+  ) internal {
+    bytes memory _data = encode(mapId, player, ft, stake, dead, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -275,8 +363,18 @@ library BmPlayer {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, bytes32 key, bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) internal {
-    bytes memory _data = encode(mapId, player, ft, stake, dead);
+  function set(
+    IStore _store,
+    bytes32 key,
+    bytes32 mapId,
+    bytes32 player,
+    int32 ft,
+    uint256 stake,
+    bool dead,
+    uint32 x,
+    uint32 y
+  ) internal {
+    bytes memory _data = encode(mapId, player, ft, stake, dead, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -284,19 +382,31 @@ library BmPlayer {
     _store.setRecord(_tableId, _keyTuple, _data);
   }
 
+  /** Set the full data using the data struct */
+  function set(bytes32 key, BmPlayerData memory _table) internal {
+    set(key, _table.mapId, _table.player, _table.ft, _table.stake, _table.dead, _table.x, _table.y);
+  }
+
+  /** Set the full data using the data struct (using the specified store) */
+  function set(IStore _store, bytes32 key, BmPlayerData memory _table) internal {
+    set(_store, key, _table.mapId, _table.player, _table.ft, _table.stake, _table.dead, _table.x, _table.y);
+  }
+
   /** Decode the tightly packed blob using this table's schema */
-  function decode(
-    bytes memory _blob
-  ) internal pure returns (bytes32 mapId, bytes32 player, int32 ft, uint256 stake, bool dead) {
-    mapId = (Bytes.slice32(_blob, 0));
+  function decode(bytes memory _blob) internal pure returns (BmPlayerData memory _table) {
+    _table.mapId = (Bytes.slice32(_blob, 0));
 
-    player = (Bytes.slice32(_blob, 32));
+    _table.player = (Bytes.slice32(_blob, 32));
 
-    ft = (int32(uint32(Bytes.slice4(_blob, 64))));
+    _table.ft = (int32(uint32(Bytes.slice4(_blob, 64))));
 
-    stake = (uint256(Bytes.slice32(_blob, 68)));
+    _table.stake = (uint256(Bytes.slice32(_blob, 68)));
 
-    dead = (_toBool(uint8(Bytes.slice1(_blob, 100))));
+    _table.dead = (_toBool(uint8(Bytes.slice1(_blob, 100))));
+
+    _table.x = (uint32(Bytes.slice4(_blob, 101)));
+
+    _table.y = (uint32(Bytes.slice4(_blob, 105)));
   }
 
   /** Tightly pack full data using this table's schema */
@@ -305,9 +415,11 @@ library BmPlayer {
     bytes32 player,
     int32 ft,
     uint256 stake,
-    bool dead
+    bool dead,
+    uint32 x,
+    uint32 y
   ) internal view returns (bytes memory) {
-    return abi.encodePacked(mapId, player, ft, stake, dead);
+    return abi.encodePacked(mapId, player, ft, stake, dead, x, y);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

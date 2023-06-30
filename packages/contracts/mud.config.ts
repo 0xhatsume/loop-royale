@@ -46,13 +46,15 @@ export default mudConfig({
 
     BmPlayer: {
       // player key is mapId & player address to bytes
-      dataStruct: false,
+      //dataStruct: false,
       schema: {
         mapId: "bytes32", //for easy search
         player: "bytes32", //for easy search
         ft: "int32",
         stake: "uint256",
-        dead: "bool"
+        dead: "bool",
+        x: "uint32",
+        y: "uint32"
       },
     },
 

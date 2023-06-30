@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 import { System } from "@latticexyz/world/src/System.sol";
-import { BattleMap, BmPlayer, 
+import { BattleMap, 
+    BmPlayer, 
+    BmPlayerData,
     BmItem,
     MapMembers,
     BmPlayerCount,
@@ -34,12 +36,16 @@ contract BattleInitSystem is System {
             );
         
         // create player
-        BmPlayer.set(playerEntity, 
-                battleMapId,
-                player,
-                100,    // health
-                stake,     // stake
-                false // dead
+        BmPlayer.set(playerEntity,
+            BmPlayerData( 
+                    battleMapId,
+                    player,
+                    100,    // health
+                    stake,     // stake
+                    false, // dead
+                    0, // 0 x
+                    0 // 0 y
+            )
                 );
 
         //emit GameCreated(uint256(battleMapId), width, height);
@@ -47,13 +53,14 @@ contract BattleInitSystem is System {
         // set map players
         bytes32[] memory players = new bytes32[](1);
         players[0] = player;
-        MapMembers.set(battleMapId, players);
+        //MapMembers.set(battleMapId, players);
+        MapMembers.push(battleMapId, playerEntity);
         BmPlayerCount.set(battleMapId,
                 BmPlayerCount.get(battleMapId) + 1
             );
 
         // set player position
-        BmPosition.set(playerEntity, 5, 5);
+        BmPosition.set(playerEntity, 0, 0);
     }
 
     function registerPlayer(bytes32 mapId, uint256 stake, address playerAddress) public {
@@ -67,11 +74,15 @@ contract BattleInitSystem is System {
 
         // create player
         BmPlayer.set(playerEntity, 
-                mapId,
-                player,
-                100,    // health
-                stake,     // stake
-                false // dead
+            BmPlayerData(
+                    mapId,
+                    player,
+                    100,    // health
+                    stake,     // stake
+                    false, // dead
+                    0,
+                    0
+            )
                 );
 
         // set map players
@@ -79,6 +90,8 @@ contract BattleInitSystem is System {
         BmPlayerCount.set(mapId,
                 BmPlayerCount.get(mapId) + 1
             );
+        // set player position
+        BmPosition.set(playerEntity, 0, 0);
     }
 
     function setStake(bytes32 mapId, uint256 stake, address playerAddress) public {
@@ -132,6 +145,8 @@ contract BattleInitSystem is System {
             
             // set player position
             BmPosition.set(playerEntity, x, y);
+            BmPlayer.setX(playerEntity, x);
+            BmPlayer.setY(playerEntity, y);
             
         }
 

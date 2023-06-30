@@ -12,15 +12,20 @@ const RoomCard = ({entity, roomNum, roomName, stake, format, host, players, stat
 
   return (
     
-    <div className="w-full py-3
-    bg-amber-100 
+    <div className={`w-full py-3
+    
+    ${
+    status ?
+      "bg-gray-400"
+    : "bg-amber-100 hover:text-orange-600 "
+    } 
     text-gray-700 font-medium
-    hover:text-orange-600 hover:font-bold
+    hover:font-bold
     flex items-center 
     
     flex-nowrap text-center
     border border-gray-400
-    ">
+    `}>
       <div className="w-[5rem] px-2">{roomNum??"x"}</div>
       <div className="w-[12rem] 
       text-left pl-4">
@@ -32,13 +37,17 @@ const RoomCard = ({entity, roomNum, roomName, stake, format, host, players, stat
 
       <div className="flex justify-center flex-grow">
 
-        <Link to={`/game/${entity}`} className="rounded-lg
-          bg-orange-700 hover:bg-orange-400
+        <Link to={`/game/${entity}`} className={`rounded-lg
+          ${status ?
+          "bg-gray-700 hover:bg-gray-400"
+            :
+          "bg-orange-700 hover:bg-orange-400"
+          }
           border 
           hover: border-2 hover:border-orange-700
           w-[7.5rem] py-1 text-white
-        ">
-          {status ? "Game in Progress" : "Join Game"}
+        `}>
+          {status ? "Game Started" : "Join Game"}
           </Link>
       </div>
     

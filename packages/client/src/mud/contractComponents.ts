@@ -73,6 +73,8 @@ export function defineContractComponents(world: World) {
           ft: RecsType.Number,
           stake: RecsType.BigInt,
           dead: RecsType.Boolean,
+          x: RecsType.Number,
+          y: RecsType.Number,
         },
         {
           metadata: {

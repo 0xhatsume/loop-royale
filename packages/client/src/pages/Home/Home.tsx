@@ -123,18 +123,20 @@ const Home = () => {
 
               {
                 battleMaps.map((bm) => {
-                  return(
-                  <RoomCard 
-                    key={bm.entity}
-                    entity={bm.entity}
-                    roomNum={bm.roomNumber}
-                    roomName={bm.roomname}
-                    stake= {bm.stake}
-                    format={`${bm.width} x ${bm.height}`}
-                    host={gameCreator(bm.gamecreatedby)}
-                    players={bm.playerlimit}
-                    status={bm.gamestart}
-                  />)
+                  if(bm.gameend !== true){
+                    return(
+                        <RoomCard 
+                          key={bm.entity}
+                          entity={bm.entity}
+                          roomNum={bm.roomNumber}
+                          roomName={bm.roomname}
+                          stake= {bm.stake}
+                          format={`${bm.width} x ${bm.height}`}
+                          host={gameCreator(bm.gamecreatedby as string)}
+                          players={bm.playerlimit}
+                          status={bm.gamestart}
+                        />
+                    )}
                 })
               }
             </div>

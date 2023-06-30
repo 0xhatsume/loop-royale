@@ -32,7 +32,7 @@ const GameRoom = () => {
     if (isNaN(mapHeight * mapWidth)){
       return (
         <div className="h-full w-full
-        flex justify-end items-start">
+        flex justify-center items-start">
           Invalid Game
         </div>
       )
@@ -40,7 +40,7 @@ const GameRoom = () => {
   } catch (error) {
     return (
       <div className="h-full w-full
-      flex justify-end items-start">
+      flex justify-center items-start">
         Invalid Game
       </div>
     )
@@ -57,47 +57,62 @@ const GameRoom = () => {
   
   useGameKeyListener(mapIdBytes32String);
   // get player position
-  const playerPosition = useComponentValue(BmPosition, 
-    playerEntityKeyBytes32String as Entity
-  ) ;
+  // const playerPosition = useComponentValue(BmPosition, 
+  //   playerEntityKeyBytes32String as Entity
+  // ) ;
   
   const rows = new Array(mapHeight).fill(0).map((_, i) => i);
   const columns = new Array(mapWidth).fill(0).map((_, i) => i); 
   
   const [avatarUrl, setAvatarUrl] = useState<string>(avatars?.[0].src);
+  const [opponentsAvatarUrl, setOpponentsAvatarUrl] = useState<string>(avatars?.[1].src);
   const handleAvatarSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     avatars.map((avatar, i) => {
       if (avatar?.name === e.currentTarget.value) {
         setAvatarUrl(avatar.src)
+        // total only 4 so if i is chosen, give it the next value or wrap around
+        setOpponentsAvatarUrl(avatars?.[(i+1)%avatars.length].src)
       }
     })
   }
 
-  // query for player details in this map
+  // query for player details in this map //NOTE THAT WHOLE PAGE REFRESH DEPENDS ON THIS HOOK!
   const players = useEntityQuery([Has(BmPlayer), HasValue(BmPlayer, {mapId: mapIdBytes32String})]);
   // const players = runQuery([Has(BmPlayer), HasValue(BmPlayer, {
   //   mapId: mapIdBytes32String
   // })]);
-  // console.log("players")
-  // console.log(players)
 
   //const playerRanks = [...players].map((player) => {
-  const playerRanks = players.map((player) => {
+  const allPlayerDetails = players.map((player) => {
     const p = getComponentValue(BmPlayer, player)
     //const p = getComponentValueStrict(BmPlayer, player) //just componentValue as the move hook will rerender
     // when things change
     return {
       ...p,
       status: p.dead ? "Dead" : "Alive",
-      player: addressShortener(ethers.utils.hexStripZeros(p.player)),
-      avatar: avatarUrl??"🐱",
+      player: ethers.utils.hexStripZeros(p.player),
+      avatar: address?.toLocaleLowerCase() == ethers.utils.hexStripZeros(p.player)?.toLocaleLowerCase() ? 
+        avatarUrl??"🐶" : opponentsAvatarUrl??"🐱"
     }
   })
+  const playerOnlyDetails = allPlayerDetails.filter(
+    (player) => {return player.player?.toLowerCase() == address?.toLowerCase()??"0x00"}
+    )[0];
   
-  // const playerCount = useComponentValue(BmPlayerCount, mapId as Entity);
-  // console.log("playerCount:", playerCount.value);
+  const otherPlayerDetails = allPlayerDetails.filter(
+    (player) => {return player.player?.toLowerCase() != address?.toLowerCase()??"0x00"}
+    )
+  
+  const otherPlayerPositions = otherPlayerDetails.map((player) => {
+    return {x: player.x, y: player.y}
+  })
 
-  //const [numPlayers, setSetNumberPlayers] = useState(playerRanks.length);
+  const checkIncludes = (pos: {x: number, y: number}) => {
+    return otherPlayerPositions.some((p) => {
+      return JSON.stringify(p) == JSON.stringify(pos)
+    })
+  }
+
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(isConnected) {
@@ -106,9 +121,6 @@ const GameRoom = () => {
         toBn(e.currentTarget.stake.value).toString(),
         address as string
         )
-      //   .then(() => {
-      //   setSetNumberPlayers(numPlayers+1);
-      // })
     }
 
   }
@@ -149,15 +161,16 @@ const GameRoom = () => {
                     
                     style={{
                       backgroundImage: `url(${
-                        (x==playerPosition?.x && y==playerPosition?.y)? 
-                        avatarUrl : ""
+                        (x==playerOnlyDetails?.x && y==playerOnlyDetails?.y)? 
+                        avatarUrl : 
+                        checkIncludes({x,y})? opponentsAvatarUrl : ""
                       })`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       backgroundRepeat: "no-repeat",
                     }}
                     >
-                      {(x==playerPosition?.x && y==playerPosition?.y)? 
+                      {(x==playerOnlyDetails?.x && y==playerOnlyDetails?.y)? 
                       
                       null
                       
@@ -271,7 +284,7 @@ const GameRoom = () => {
         ">
 
           {/* Rank */}
-          <RankMonitor playerRanks={playerRanks}/>
+          <RankMonitor playerRanks={allPlayerDetails}/>
 
           {/* Chat */}
           <div className="mt-3 mb-9

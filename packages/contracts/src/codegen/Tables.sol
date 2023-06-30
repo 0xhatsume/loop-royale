@@ -6,7 +6,7 @@ pragma solidity >=0.8.0;
 import { BattleMap, BattleMapTableId } from "./tables/BattleMap.sol";
 import { MapMembers, MapMembersTableId } from "./tables/MapMembers.sol";
 import { BmItem, BmItemTableId } from "./tables/BmItem.sol";
-import { BmPlayer, BmPlayerTableId } from "./tables/BmPlayer.sol";
+import { BmPlayer, BmPlayerData, BmPlayerTableId } from "./tables/BmPlayer.sol";
 import { BmPosition, BmPositionTableId } from "./tables/BmPosition.sol";
 import { SpawnPos, SpawnPosTableId } from "./tables/SpawnPos.sol";
 import { BmPlayerCount, BmPlayerCountTableId } from "./tables/BmPlayerCount.sol";

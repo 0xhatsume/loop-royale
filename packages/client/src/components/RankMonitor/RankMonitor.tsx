@@ -1,5 +1,6 @@
 import React from 'react';
 import RankCard from '../RankCard/RankCard';
+import { addressShortener } from '../../utils/addressShortener';
 
 const RankMonitor = ({playerRanks}) => {
 
@@ -41,7 +42,7 @@ const RankMonitor = ({playerRanks}) => {
                                     src={playerRank.avatar}/>
                                 }
                                 //avatar={playerRank.avatar}
-                                player={playerRank.player}
+                                player={addressShortener(playerRank.player)}
                                 ft={playerRank.ft}
                                 stake={playerRank.stake}
                                 status={playerRank.status}

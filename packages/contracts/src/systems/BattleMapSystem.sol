@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 import { System } from "@latticexyz/world/src/System.sol";
-import { BattleMap, BmPlayer, 
+import { BattleMap, 
+    BmPlayer, 
+    //BmPlayerData,
     BmItem,
     MapMembers,
     SpawnPos, 
@@ -122,6 +124,8 @@ contract BattleMapSystem is System {
         //require(_checkMoveAllowed(mapId, x, y, playerAddress), "move not allowed");
         // set player position if there is no battle
         BmPosition.set(playerEntity, x, y);
+        BmPlayer.setX(playerEntity, x);
+        BmPlayer.setY(playerEntity, y);
     }
     // function move(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public pure returns (bool){
     //     //return _move(mapId, x, y, address(_msgSender()));
