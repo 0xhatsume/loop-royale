@@ -18,7 +18,7 @@ import {toBn} from "evm-bn";
 
 const GameRoom = () => {
   console.log("GameRoom Refresh")
-  const { components: { BattleMap, BmPlayer, BmPosition, MapMembers, BmPlayerCount },
+  const { components: { BattleMap, BmPlayer, BmItem },
           systemCalls: { registerPlayer, startGame },
             network: { storeCache, playerEntity },
           } = useMUD();
@@ -66,6 +66,8 @@ const GameRoom = () => {
   
   const [avatarUrl, setAvatarUrl] = useState<string>(avatars?.[0].src);
   const [opponentsAvatarUrl, setOpponentsAvatarUrl] = useState<string>(avatars?.[1].src);
+  const [itemUrl, setItemUrl] = useState<string>("/assets/items/powerup.gif");
+
   const handleAvatarSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     avatars.map((avatar, i) => {
       if (avatar?.name === e.currentTarget.value) {
@@ -81,6 +83,15 @@ const GameRoom = () => {
   // const players = runQuery([Has(BmPlayer), HasValue(BmPlayer, {
   //   mapId: mapIdBytes32String
   // })]);
+
+  const items = useEntityQuery([Has(BmItem), HasValue(BmItem, {mapId: mapIdBytes32String})]);
+  const itemDetails = items.map((item) => {
+    return { ...getComponentValue(BmItem, item)}
+  })
+  const itemPositions = itemDetails.map((item) => {
+    return {x: item.x, y: item.y}
+  })
+  console.log(itemPositions);
 
   //const playerRanks = [...players].map((player) => {
   const allPlayerDetails = players.map((player) => {
@@ -107,8 +118,8 @@ const GameRoom = () => {
     return {x: player.x, y: player.y}
   })
 
-  const checkIncludes = (pos: {x: number, y: number}) => {
-    return otherPlayerPositions.some((p) => {
+  const checkIncludes = (posArray: Array<T>, pos: {x: number, y: number}) => {
+    return posArray.some((p) => {
       return JSON.stringify(p) == JSON.stringify(pos)
     })
   }
@@ -116,7 +127,7 @@ const GameRoom = () => {
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(isConnected) {
-      console.log(toBn(e.currentTarget.stake.value).toString());
+      //console.log(toBn(e.currentTarget.stake.value).toString());
       await registerPlayer(mapIdBytes32String, 
         toBn(e.currentTarget.stake.value).toString(),
         address as string
@@ -163,7 +174,9 @@ const GameRoom = () => {
                       backgroundImage: `url(${
                         (x==playerOnlyDetails?.x && y==playerOnlyDetails?.y)? 
                         avatarUrl : 
-                        checkIncludes({x,y})? opponentsAvatarUrl : ""
+                        checkIncludes(otherPlayerPositions, {x,y})? opponentsAvatarUrl : 
+                        checkIncludes(itemPositions, {x,y})? itemUrl
+                        : ""
                       })`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
