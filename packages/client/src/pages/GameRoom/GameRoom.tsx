@@ -10,7 +10,7 @@ import RankMonitor from '../../components/RankMonitor/RankMonitor';
 import { padToBytes32 } from '../../utils/byteutils';
 import { ethers } from 'ethers';
 import { useKeyboardMovement } from '../../useKeyboardMovement';
-import { useComponentValue } from "@latticexyz/react";
+import { useComponentValue, useEntityQuery } from "@latticexyz/react";
 import { avatars } from '../../constants/assets';
 import { addressShortener } from '../../utils/addressShortener';
 import { useAccount } from 'wagmi';
@@ -18,7 +18,7 @@ import {toBn} from "evm-bn";
 
 const GameRoom = () => {
   console.log("GameRoom Refresh")
-  const { components: { BattleMap, BmPlayer, BmPosition, MapMembers },
+  const { components: { BattleMap, BmPlayer, BmPosition, MapMembers, BmPlayerCount },
           systemCalls: { registerPlayer, startGame },
             network: { storeCache, playerEntity },
           } = useMUD();
@@ -74,12 +74,16 @@ const GameRoom = () => {
   }
 
   // query for player details in this map
-  const players = runQuery([Has(BmPlayer), HasValue(BmPlayer, {
-    mapId: mapIdBytes32String
-  })]);
+  const players = useEntityQuery([Has(BmPlayer), HasValue(BmPlayer, {mapId: mapIdBytes32String})]);
+  // const players = runQuery([Has(BmPlayer), HasValue(BmPlayer, {
+  //   mapId: mapIdBytes32String
+  // })]);
+  // console.log("players")
+  // console.log(players)
 
-  const playerRanks = [...players].map((player) => {
-    const p = useComponentValue(BmPlayer, player)
+  //const playerRanks = [...players].map((player) => {
+  const playerRanks = players.map((player) => {
+    const p = getComponentValue(BmPlayer, player)
     //const p = getComponentValueStrict(BmPlayer, player) //just componentValue as the move hook will rerender
     // when things change
     return {
@@ -90,7 +94,10 @@ const GameRoom = () => {
     }
   })
   
-  const [numPlayers, setSetNumberPlayers] = useState(playerRanks.length);
+  // const playerCount = useComponentValue(BmPlayerCount, mapId as Entity);
+  // console.log("playerCount:", playerCount.value);
+
+  //const [numPlayers, setSetNumberPlayers] = useState(playerRanks.length);
   const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if(isConnected) {
@@ -98,16 +105,13 @@ const GameRoom = () => {
       await registerPlayer(mapIdBytes32String, 
         toBn(e.currentTarget.stake.value).toString(),
         address as string
-        ).then(() => {
-        setSetNumberPlayers(numPlayers+1);
-      })
+        )
+      //   .then(() => {
+      //   setSetNumberPlayers(numPlayers+1);
+      // })
     }
 
   }
-
-  const mapMembers = useComponentValue(MapMembers, mapIdBytes32String as Entity);
-  console.log("mapMembers");
-  console.log(mapMembers);
 
   return (
     <div className="h-full w-full

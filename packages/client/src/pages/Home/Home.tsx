@@ -14,6 +14,7 @@ import { addDoc, collection, serverTimestamp,
 import { useAccount } from 'wagmi';
 import { DECIMAL } from '../../constants';
 import {toBn, fromBn} from "evm-bn";
+import { padToBytes32 } from '../../utils/byteutils';
 
 const Home = () => {
   const {

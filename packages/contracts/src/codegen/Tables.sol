@@ -9,4 +9,5 @@ import { BmItem, BmItemTableId } from "./tables/BmItem.sol";
 import { BmPlayer, BmPlayerTableId } from "./tables/BmPlayer.sol";
 import { BmPosition, BmPositionTableId } from "./tables/BmPosition.sol";
 import { SpawnPos, SpawnPosTableId } from "./tables/SpawnPos.sol";
+import { BmPlayerCount, BmPlayerCountTableId } from "./tables/BmPlayerCount.sol";
 import { BmObstruction, BmObstructionTableId } from "./tables/BmObstruction.sol";

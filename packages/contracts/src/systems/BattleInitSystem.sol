@@ -4,6 +4,7 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { BattleMap, BmPlayer, 
     BmItem,
     MapMembers,
+    BmPlayerCount,
     SpawnPos, 
     //ItemPos,
     BmPosition, BmObstruction } from "../codegen/Tables.sol";
@@ -23,7 +24,7 @@ contract BattleInitSystem is System {
         // create entity keys
         bytes32 player = addressToEntityKey(address(playerAddress)); //short term fix
         //bytes32 player = addressToEntityKey(address(_msgSender()));
-        bytes32 battleMapId = getUniqueEntity();
+        bytes32 battleMapId = bytes32(getUniqueEntity());
         bytes32 playerEntity = mapAndentityToEntityKey(battleMapId, player);
 
         // create map
@@ -47,6 +48,9 @@ contract BattleInitSystem is System {
         bytes32[] memory players = new bytes32[](1);
         players[0] = player;
         MapMembers.set(battleMapId, players);
+        BmPlayerCount.set(battleMapId,
+                BmPlayerCount.get(battleMapId) + 1
+            );
 
         // set player position
         BmPosition.set(playerEntity, 5, 5);
@@ -57,6 +61,9 @@ contract BattleInitSystem is System {
         bytes32 player = addressToEntityKey(playerAddress); //short term fix
         //bytes32 player = addressToEntityKey(address(_msgSender()));
         bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
+
+        require(BmPlayerCount.get(mapId)<=BattleMap.getPlayerlimit(mapId)-1,
+        "maxed player limit");
 
         // create player
         BmPlayer.set(playerEntity, 
@@ -69,6 +76,9 @@ contract BattleInitSystem is System {
 
         // set map players
         MapMembers.push(mapId, playerEntity);
+        BmPlayerCount.set(mapId,
+                BmPlayerCount.get(mapId) + 1
+            );
     }
 
     function setStake(bytes32 mapId, uint256 stake, address playerAddress) public {
@@ -122,6 +132,7 @@ contract BattleInitSystem is System {
             
             // set player position
             BmPosition.set(playerEntity, x, y);
+            
         }
 
         //TODO: HOW TO PREVENT SPAWNING ON SAME POSITION?
