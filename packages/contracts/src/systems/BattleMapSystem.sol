@@ -63,6 +63,7 @@ contract BattleMapSystem is System {
 
         // end game
         BattleMap.setGameend(mapId, true);
+        BattleMap.setWinner(mapId, _checkWinner(mapId)); //set winner
     }
 
     function move(bytes32 mapId, uint32 x, uint32 y, address playerAddress) public returns (bool){
@@ -128,6 +129,7 @@ contract BattleMapSystem is System {
         // check if game has ended
         if (BmPlayerCount.get(mapId) == 1) {
             BattleMap.setGameend(mapId, true);
+            BattleMap.setWinner(mapId, _checkWinner(mapId));
         }
         return true;
     }
@@ -169,9 +171,20 @@ contract BattleMapSystem is System {
         if (BmPlayerCount.get(mapId) == 1) {
             // set game end
             BattleMap.setGameend(mapId, true);
+            // set winner
+            BattleMap.setWinner(mapId, _checkWinner(mapId));
         }
 
         return winner;
+    }
+
+    function _checkWinner(bytes32 mapId) internal view returns (bytes32){
+        for (uint i = 0; i < MapMembers.get(mapId).length; i++) {
+            if (!BmPlayer.getDead(MapMembers.get(mapId)[i])) {
+                return MapMembers.get(mapId)[i];
+            }
+        }
+        return bytes32(0);
     }
 
     function _checkMoveAllowed(bytes32 mapId, uint32 x, uint32 y, address playerAddress) internal view returns (bool){

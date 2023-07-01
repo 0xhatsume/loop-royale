@@ -101,10 +101,17 @@ const GameRoom = () => {
       ...p,
       status: p.dead ? "Dead" : "Alive",
       player: ethers.utils.hexStripZeros(p.player),
+      playerentity: player,
       avatar: address?.toLocaleLowerCase() == ethers.utils.hexStripZeros(p.player)?.toLocaleLowerCase() ? 
         avatarUrl??"🐶" : opponentsAvatarUrl??"🐱"
     }
   })
+
+  const winnerFromMapParams = (allPlayerDetails, map)=>{
+    const winnerKey = ethers.utils.hexStripZeros(map?.winner).toString().toLowerCase()
+    // loop through allPlayerDetails to find winner address where it contains playerentity == winnerKey
+    return allPlayerDetails.find((player) => {return player.playerentity == winnerKey})?.player
+  }
 
   const totalStaked = allPlayerDetails.reduce((acc, player) => {
     return acc + parseFloat(fromBn(player?.stake ?? toBn(0)),10)
@@ -216,7 +223,7 @@ const GameRoom = () => {
               <span className={`
               flex-grow px-3
               `}>
-                {`${mapParams?.gameend ? addressShortener(ethers.utils.hexStripZeros(mapParams?.winner)) : "--"}`}
+                {`${mapParams?.gameend ? addressShortener(winnerFromMapParams(allPlayerDetails,mapParams)) : "--"}`}
               </span>
           </div>
           <div className="
