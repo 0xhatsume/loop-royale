@@ -9,7 +9,7 @@ const RankCard = ({avatar, player, ft, stake, status}) => {
 
             ${status=="Dead" ? 
             "bg-gray-500 hover:bg-gray-600 text-white" :
-            "bg-[#d4bcad] hover:bg-orange-300text-gray-700" 
+            "bg-[#d4bcad] hover:bg-orange-300 text-gray-700" 
             }
             
             font-semibold
