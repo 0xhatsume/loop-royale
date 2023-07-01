@@ -225,6 +225,10 @@ contract BattleInitSystem is System {
         bytes32 player = addressToEntityKey(playerAddress); //short term fix
         //bytes32 player = addressToEntityKey(address(_msgSender()));
 
+        // check if player count is more than 1
+        require(BmPlayerCount.get(mapId)>1,
+        "only 1 player in the game");
+
         // check if player is owner
         require(BattleMap.getGamecreatedby(mapId) == player,
         "only map creator can start game");

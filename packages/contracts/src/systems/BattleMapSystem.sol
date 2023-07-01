@@ -82,6 +82,11 @@ contract BattleMapSystem is System {
             int32 currentFt = BmPlayer.getFt(playerEntity);
             // update player buff
             BmPlayer.setFt(playerEntity, currentFt+ buff);
+            // if player FT is zero or less, update player dead
+            if (BmPlayer.getFt(playerEntity) <= 0) {
+                BmPlayer.setDead(playerEntity, true);
+                BmPlayerCount.set(mapId, BmPlayerCount.get(mapId)-1); //delete player count
+            }
             // delete item
             BmItem.deleteRecord(positionkey);
             require(BmItemCount.get(mapId)>0, "not enough items on map");
@@ -119,6 +124,11 @@ contract BattleMapSystem is System {
 
         // spawn items
         IWorld(_world()).spawnItems(mapId);
+
+        // check if game has ended
+        if (BmPlayerCount.get(mapId) == 1) {
+            BattleMap.setGameend(mapId, true);
+        }
         return true;
     }
 
@@ -153,6 +163,13 @@ contract BattleMapSystem is System {
         BmPlayer.setFt(loser, 0);
         // set loser dead status to true
         BmPlayer.setDead(loser, true);
+        // update player Count
+        BmPlayerCount.set(mapId, BmPlayerCount.get(mapId)-1);
+        // check if game has ended
+        if (BmPlayerCount.get(mapId) == 1) {
+            // set game end
+            BattleMap.setGameend(mapId, true);
+        }
 
         return winner;
     }

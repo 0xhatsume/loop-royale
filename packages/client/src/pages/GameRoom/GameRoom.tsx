@@ -14,7 +14,7 @@ import { useComponentValue, useEntityQuery } from "@latticexyz/react";
 import { avatars } from '../../constants/assets';
 import { addressShortener } from '../../utils/addressShortener';
 import { useAccount } from 'wagmi';
-import {toBn} from "evm-bn";
+import {toBn, fromBn} from "evm-bn";
 
 const GameRoom = () => {
   console.log("GameRoom Refresh")
@@ -91,7 +91,6 @@ const GameRoom = () => {
   const itemPositions = itemDetails.map((item) => {
     return {x: item.x, y: item.y}
   })
-  console.log(itemPositions);
 
   //const playerRanks = [...players].map((player) => {
   const allPlayerDetails = players.map((player) => {
@@ -106,6 +105,11 @@ const GameRoom = () => {
         avatarUrl??"🐶" : opponentsAvatarUrl??"🐱"
     }
   })
+
+  const totalStaked = allPlayerDetails.reduce((acc, player) => {
+    return acc + parseFloat(fromBn(player?.stake ?? toBn(0)),10)
+  }, 0)
+
   const playerOnlyDetails = allPlayerDetails.filter(
     (player) => {return player.player?.toLowerCase() == address?.toLowerCase()??"0x00"}
     )[0];
@@ -113,8 +117,11 @@ const GameRoom = () => {
   const otherPlayerDetails = allPlayerDetails.filter(
     (player) => {return player.player?.toLowerCase() != address?.toLowerCase()??"0x00"}
     )
-  
-  const otherPlayerPositions = otherPlayerDetails.map((player) => {
+  const otherPlayerPositions = otherPlayerDetails
+  .filter(
+    (player) => {return player.status != "Dead"}
+    )
+  .map((player) => {
     return {x: player.x, y: player.y}
   })
 
@@ -183,6 +190,36 @@ const GameRoom = () => {
               </span>
           </div>
           <div className="
+            flex flex-row items-start
+            w-full
+            p-1
+            ">
+              <span className="
+              mx-2 w-[8rem]
+              px-2
+              ">Total Staked: </span>
+              <span className={`
+              flex-grow px-3
+              `}>
+                {parseFloat(totalStaked, 3)??"??"}
+              </span>
+          </div>
+          <div className="
+            flex flex-row items-start
+            w-full
+            p-1
+            ">
+              <span className="
+              mx-2 w-[8rem]
+              px-2
+              ">Winner: </span>
+              <span className={`
+              flex-grow px-3
+              `}>
+                {`${mapParams?.gameend ? addressShortener(ethers.utils.hexStripZeros(mapParams?.winner)) : "--"}`}
+              </span>
+          </div>
+          <div className="
           flex flex-row items-start
           w-full
           p-1
@@ -201,9 +238,10 @@ const GameRoom = () => {
               "text-red-500"} 
             font-bold text-md
             `}>
-              {mapParams?.gamestart ? "Started":
+              {
               (mapParams?.gamestart && mapParams?.gamepaused) ? "Paused" :
-              (mapParams?.gamestart && mapParams?.gameend) ? "Ended" :
+              (mapParams?.gamestart && mapParams?.gameend) ? "-- Ended --" :
+              mapParams?.gamestart ? "Started":
               "Not Started"
             }</span>
           </div>
@@ -268,7 +306,7 @@ const GameRoom = () => {
                     
                     style={{
                       backgroundImage: `url(${
-                        (x==playerOnlyDetails?.x && y==playerOnlyDetails?.y)? 
+                        (x==playerOnlyDetails?.x && y==playerOnlyDetails?.y && playerOnlyDetails?.status=="Alive")? 
                         avatarUrl : 
                         checkIncludes(otherPlayerPositions, {x,y})? opponentsAvatarUrl : 
                         checkIncludes(itemPositions, {x,y})? itemUrl
