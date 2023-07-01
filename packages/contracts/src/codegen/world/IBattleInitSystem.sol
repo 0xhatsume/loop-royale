@@ -19,7 +19,7 @@ interface IBattleInitSystem {
 
   function spawnPlayers(bytes32 mapId) external;
 
-  function spawnItems(bytes32 mapId) external;
+  function spawnItems(bytes32 mapId) external returns (bool);
 
   function startGame(bytes32 mapId, address playerAddress) external;
 }

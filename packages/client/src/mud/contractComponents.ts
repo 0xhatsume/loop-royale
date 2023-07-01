@@ -131,6 +131,21 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
+    BmItemCount: (() => {
+      const tableId = new TableId("", "BmItemCount");
+      return defineComponent(
+        world,
+        {
+          value: RecsType.Number,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
     BmObstruction: (() => {
       const tableId = new TableId("", "BmObstruction");
       return defineComponent(

@@ -89,12 +89,14 @@ export function createSystemCalls(
     if (!playerEntity) {
       throw new Error("no player");
     }
-    const playerKey = ethers.utils.solidityKeccak256(
+    const playerKey = ethers.utils.hexStripZeros(ethers.utils.solidityKeccak256(
       ["bytes32", "bytes32"],
       //[mapId, padToBytes32(playerEntity)]
       [mapId, padToBytes32(address)]//short term fix
-    ) as Entity;
-
+    )) as Entity;
+    console.log("address: ", address)
+    console.log(runQuery([Has(BmPosition)]));
+    console.log("playerKey", playerKey)
     const playerPosition = getComponentValue(BmPosition, playerKey);
 
     if (!playerPosition) {

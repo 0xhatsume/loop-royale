@@ -195,8 +195,9 @@ const GameRoom = () => {
             flex-grow px-3
             ${
               (mapParams?.gamestart && mapParams?.gameend) ? 
-              "text-green-500" :
+              "text-blue-400" :
               (mapParams?.gamestart && mapParams?.gamepaused) ? "text-orange-500" :
+              (mapParams?.gamestart) ? "text-green-500" :
               "text-red-500"} 
             font-bold text-md
             `}>

@@ -25,12 +25,12 @@ export const useGameKeyListener = (mapId: string) => {
             moveBy(mapId, -1, 0, address as string);
         }
         if (e.key === "ArrowRight") {
-            //console.log("right");
+            console.log("right", mapId, address);
             moveBy(mapId, 1, 0, address as string);
         }
         };
 
         window.addEventListener("keydown", listener);
         return () => window.removeEventListener("keydown", listener);
-    }, [moveBy, mapId]);
+    }, [moveBy, mapId, address]);
 };

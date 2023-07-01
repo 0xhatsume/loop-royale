@@ -10,4 +10,5 @@ import { BmPlayer, BmPlayerData, BmPlayerTableId } from "./tables/BmPlayer.sol";
 import { BmPosition, BmPositionTableId } from "./tables/BmPosition.sol";
 import { SpawnPos, SpawnPosTableId } from "./tables/SpawnPos.sol";
 import { BmPlayerCount, BmPlayerCountTableId } from "./tables/BmPlayerCount.sol";
+import { BmItemCount, BmItemCountTableId } from "./tables/BmItemCount.sol";
 import { BmObstruction, BmObstructionTableId } from "./tables/BmObstruction.sol";

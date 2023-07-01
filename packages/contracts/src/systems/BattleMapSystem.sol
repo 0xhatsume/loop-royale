@@ -6,6 +6,8 @@ import { BattleMap,
     //BmPlayerData,
     BmItem,
     MapMembers,
+    BmPlayerCount,
+    BmItemCount,
     SpawnPos, 
     //ItemPos,
     BmPosition, BmObstruction } from "../codegen/Tables.sol";
@@ -14,7 +16,7 @@ import { mapAndpositionToEntityKey } from "../mapAndpositionToEntityKey.sol";
 import { mapAndentityToEntityKey } from "../mapAndentityToEntityKey.sol";
 import { getUniqueEntity} from "@latticexyz/world/src/modules/uniqueentity/getUniqueEntity.sol";
 import { getKeysWithValue } from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
-
+import { IWorld } from "../codegen/world/IWorld.sol";
 // Import user types
 import { ItemType } from "../codegen/Types.sol";
 
@@ -82,6 +84,8 @@ contract BattleMapSystem is System {
             BmPlayer.setFt(playerEntity, currentFt+ buff);
             // delete item
             BmItem.deleteRecord(positionkey);
+            require(BmItemCount.get(mapId)>0, "not enough items on map");
+            BmItemCount.set(mapId, BmItemCount.get(mapId)-1); //delete item count
         }
 
         // get map players
@@ -112,6 +116,9 @@ contract BattleMapSystem is System {
         BmPosition.set(playerEntity, x, y);
         BmPlayer.setX(playerEntity, x);
         BmPlayer.setY(playerEntity, y);
+
+        // spawn items
+        IWorld(_world()).spawnItems(mapId);
         return true;
     }
 
@@ -190,9 +197,9 @@ contract BattleMapSystem is System {
         bytes32 player2Entity = mapAndentityToEntityKey(mapId, player2);
 
         // get player1 ft
-        uint256 player1Ft = uint256(int256(BmPlayer.getFt(player1Entity)));
+        uint256 player1Ft = uint256(int256(int32(BmPlayer.getFt(player1Entity))));
         // get player2 ft
-        uint256 player2Ft = uint256(int256(BmPlayer.getFt(player2Entity)));
+        uint256 player2Ft = uint256(int256(int32(BmPlayer.getFt(player2Entity))));
 
         uint256 totalFt = player1Ft + player2Ft;
 
@@ -201,7 +208,7 @@ contract BattleMapSystem is System {
             mapId, player1Entity, player2Entity, totalFt,
             block.timestamp, block.difficulty))) % 1e18 + 1;
 
-        uint256 player1Chance = _divide(player1Ft, totalFt) * 100;
+        uint256 player1Chance = _perCentDivide(player1Ft, totalFt+1);
 
         // 
         if (randomNumber <= player1Chance) {
@@ -233,9 +240,9 @@ contract BattleMapSystem is System {
         return deltaX + deltaY;
     }
 
-    function _divide(uint256 a, uint256 b) internal pure returns(uint256) {
+    function _perCentDivide(uint256 a, uint256 b) internal pure returns(uint256) {
         require(b != 0, "division by zero will result in infinity.");
-        return (a * 1e18) / b;
+        return (a * 1e18 * 100) / b;
     }
 
     function deleteGame(bytes32 mapId, address playerAddress) public {

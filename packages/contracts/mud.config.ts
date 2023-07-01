@@ -76,6 +76,7 @@ export default mudConfig({
     },
 
     BmPlayerCount:"uint32",
+    BmItemCount:"uint32",
 
     // ItemPos: {
     //   dataStruct: false,

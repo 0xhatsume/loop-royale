@@ -7,6 +7,7 @@ import { BattleMap,
     BmItem,
     MapMembers,
     BmPlayerCount,
+    BmItemCount,
     SpawnPos, 
     //ItemPos,
     BmPosition, BmObstruction } from "../codegen/Tables.sol";
@@ -58,6 +59,8 @@ contract BattleInitSystem is System {
         BmPlayerCount.set(battleMapId,
                 BmPlayerCount.get(battleMapId) + 1
             );
+        // set Item Count
+        BmItemCount.set(battleMapId, 0);
 
         // set player position
         BmPosition.set(playerEntity, 0, 0);
@@ -153,60 +156,67 @@ contract BattleInitSystem is System {
         //TODO: HOW TO PREVENT SPAWNING ON SAME POSITION?
     }
 
-    function spawnItems(bytes32 mapId) public {
+    function spawnItems(bytes32 mapId) public returns (bool){
         require(BattleMap.getGamestart(mapId),
         "game not started");
 
-        // get number of players on map
+        // get number of players in map
         uint32 numPlayers = uint32(MapMembers.get(mapId).length);
         uint32 numItemsToMaintain = numPlayers - 1;
         numItemsToMaintain = numItemsToMaintain < 1 ? 1 : numItemsToMaintain;
 
         // get number of items to spawn
-        uint32 numItemsToSpawn = numItemsToMaintain - uint32(
-                                        SpawnPos.getX(mapId).length);
+        uint32 numItemsToSpawn = numItemsToMaintain - BmItemCount.get(mapId);
         numItemsToSpawn = numItemsToSpawn < 0 ? 0 : numItemsToSpawn;
 
-        require(numItemsToSpawn > 0,"nothing to spawn");
+        if(numItemsToSpawn < 1){
+            return false;
+        }else{
 
-        // get map dimensions
-        uint32 width = BattleMap.getWidth(mapId);
-        uint32 height = BattleMap.getHeight(mapId);
+            // get map dimensions
+            uint32 width = BattleMap.getWidth(mapId);
+            uint32 height = BattleMap.getHeight(mapId);
 
-        for (uint i=0; i<numItemsToSpawn; i++) {
-            
-            uint256 rand = uint256(
-                keccak256(abi.encodePacked(
-                    numPlayers, mapId,
-                    blockhash(block.number - 1), block.difficulty, i))
+            for (uint i=0; i<numItemsToSpawn; i++) {
+                
+                uint256 rand = uint256(
+                    keccak256(abi.encodePacked(
+                        numPlayers, mapId,
+                        blockhash(block.number - 1), block.difficulty, i))
+                    );
+                
+                // get a random value for x and y within map dimensions
+                uint32 x = uint32(uint256(
+                    keccak256(abi.encodePacked(
+                        width, mapId,
+                        blockhash(block.number - 1), block.difficulty, i))
+                    ) % width);
+                uint32 y = uint32(uint256(
+                    keccak256(abi.encodePacked(
+                        height, mapId,
+                        blockhash(block.number - 1), block.difficulty, i))
+                    ) % height);
+                
+                // create item
+                bytes32 itemId = mapAndpositionToEntityKey(mapId, x, y);
+                BmItem.set(itemId, 
+                            ItemType.PowerUp, 
+                            rand%2==0 ? int32(-50) : int32(50),
+                            mapId,
+                            x,
+                            y
                 );
-            
-            // get a random value for x and y within map dimensions
-            uint32 x = uint32(uint256(
-                keccak256(abi.encodePacked(
-                    width, mapId,
-                    blockhash(block.number - 1), block.difficulty, i))
-                ) % width);
-            uint32 y = uint32(uint256(
-                keccak256(abi.encodePacked(
-                    height, mapId,
-                    blockhash(block.number - 1), block.difficulty, i))
-                ) % height);
-            
-            // create item
-            bytes32 itemId = mapAndpositionToEntityKey(mapId, x, y);
-            BmItem.set(itemId, 
-                        ItemType.PowerUp, 
-                        rand%2==0 ? int32(-50) : int32(50),
-                        mapId,
-                        x,
-                        y
-            );
+                BmItemCount.set(mapId,
+                    BmItemCount.get(mapId) + 1
+                ); // update item count
 
-            // append item position to store
-            // ItemPos.pushX(mapId, x);
-            // ItemPos.pushY(mapId, y);
+                // append item position to store
+                // ItemPos.pushX(mapId, x);
+                // ItemPos.pushY(mapId, y);
 
+            }
+
+            return true;
         }
     }
 
