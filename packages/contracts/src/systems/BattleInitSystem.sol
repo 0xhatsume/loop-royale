@@ -72,6 +72,10 @@ contract BattleInitSystem is System {
         //bytes32 player = addressToEntityKey(address(_msgSender()));
         bytes32 playerEntity = mapAndentityToEntityKey(mapId, player);
 
+        for(uint i=0; i<MapMembers.get(mapId).length; i++){
+            require(MapMembers.get(mapId)[i]!=playerEntity,
+            "player already registered");
+        }
         require(BmPlayerCount.get(mapId)<=BattleMap.getPlayerlimit(mapId)-1,
         "maxed player limit");
 
