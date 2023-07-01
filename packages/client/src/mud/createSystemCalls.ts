@@ -76,7 +76,7 @@ export function createSystemCalls(
     });
 
     try {
-      const tx = await worldSend("sMove", [mapIdBytes32, inputX, inputY, address]);
+      const tx = await worldSend("move", [mapIdBytes32, inputX, inputY, address]);
       await awaitStreamValue(txReduced$, (txHash) => txHash === tx.hash);
     } finally {
       BmPosition.removeOverride(positionId);

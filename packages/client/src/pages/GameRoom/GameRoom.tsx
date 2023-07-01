@@ -143,7 +143,102 @@ const GameRoom = () => {
     ">  
         
         {/* left placeholder */}
-        <div className="h-full"></div>
+        <div className="h-full flex-grow-0 w-1/5
+        flex flex-col items-start justify-start
+        pl-2
+        ">
+
+          <div className="
+          flex flex-row items-start
+          
+          mt-3 w-full
+          p-1
+          ">
+            <span className="
+            mx-2 w-[8rem]
+            px-2
+            ">Room Creator: </span>
+            <span className={`
+            flex-grow px-3
+            `}>
+              { addressShortener(
+              ethers.utils.hexStripZeros(mapParams?.gamecreatedby)
+              )
+            }
+            </span>
+          </div>
+          <div className="
+            flex flex-row items-start
+            w-full
+            p-1
+            ">
+              <span className="
+              mx-2 w-[8rem]
+              px-2
+              ">Players Here: </span>
+              <span className={`
+              flex-grow px-3
+              `}>
+                {`${players?.length} / ${mapParams?.playerlimit}`}
+              </span>
+          </div>
+          <div className="
+          flex flex-row items-start
+          w-full
+          p-1
+          ">
+            <span className="
+            mx-2 w-[8rem]
+            px-2
+            ">Game Status: </span>
+            <span className={`
+            flex-grow px-3
+            ${
+              (mapParams?.gamestart && mapParams?.gameend) ? 
+              "text-green-500" :
+              (mapParams?.gamestart && mapParams?.gamepaused) ? "text-orange-500" :
+              "text-red-500"} 
+            font-bold text-md
+            `}>
+              {mapParams?.gamestart ? "Started":
+              (mapParams?.gamestart && mapParams?.gamepaused) ? "Paused" :
+              (mapParams?.gamestart && mapParams?.gameend) ? "Ended" :
+              "Not Started"
+            }</span>
+          </div>
+          <div className="w-full mt-4 p-1 
+          ">
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">1. Confirm your stake then click "Enter Game" to register yourself for the game.
+            </p>
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">2. Wait for room creator to start game when he clicks the left most red button.
+            </p>
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">3. Move avatar with arrow keys.
+            </p>
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">4. Battle is determined by FT. Health is also interms of FT.
+            </p>
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">5. Powerups may either buff you up or down.
+            </p>
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">6. Last one standing gets all the stake.
+            </p>
+            <p className="
+            ml-2 pl-2 pr-4 mt-1
+            ">7. Good Luck Have Fun!
+            </p>
+          </div>
+
+        </div>
 
         {/* Game Area */}
         <div className="h-full w-1/2 max-w-1/2 flex flex-col
@@ -249,7 +344,7 @@ const GameRoom = () => {
                   
                   type="submit"
                   >
-                    {isConnected? "Connect Wallet to Register for Game":"Confirm Stake and Enter Game"}
+                    {isConnected? "Confirm Stake and Enter Game":"Connect Wallet to Register for Game"}
                     </button>
 
             </form>

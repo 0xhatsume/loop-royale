@@ -110,6 +110,8 @@ contract BattleMapSystem is System {
 
         // set player position if there is no battle
         BmPosition.set(playerEntity, x, y);
+        BmPlayer.setX(playerEntity, x);
+        BmPlayer.setY(playerEntity, y);
         return true;
     }
 
