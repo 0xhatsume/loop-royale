@@ -28,4 +28,4 @@ export const bladedao = {
 } as const satisfies Chain
 
 // If you are deploying to chains other than anvil or Lattice testnet, add them here
-export const supportedChains: MUDChain[] = [bladedao, foundry, latticeTestnet];
+export const supportedChains: MUDChain[] = [foundry, latticeTestnet];
