@@ -2,7 +2,7 @@ import { MUDChain, latticeTestnet } from "@latticexyz/common/chains";
 import { foundry, Chain } from "@wagmi/chains";
 
 export const bladedao = {
-    id: 1011365,
+    id: 1013454,
     name: 'BladeDAO',
     network: 'bladedao',
     nativeCurrency: {
@@ -12,20 +12,20 @@ export const bladedao = {
     },
     rpcUrls: {
       default: {
-        http: ['https://flashlayer.alt.technology/bladedao74eb1498/rpc'],
-        webSocket: ['wss://flashlayer.alt.technology/bladedao74eb1498/ws'],
+        http: ['https://flashlayer.alt.technology/blade74eb1498'],
+        webSocket: ['wss://flashlayer.alt.technology/blade74eb1498'],
       },
       public: {
-        http: ['https://flashlayer.alt.technology/bladedao74eb1498/rpc'],
-        webSocket: ['wss://flashlayer.alt.technology/bladedao74eb1498/ws'],
+        http: ['https://flashlayer.alt.technology/blade74eb1498'],
+        webSocket: ['wss://flashlayer.alt.technology/blade74eb1498'],
       },
     },
 
     blockExplorers: {
-        default: { name: 'Bladescan', url: 'https://explorer.alt.technology?rpcUrl=https://flashlayer.alt.technology/bladedao74eb1498/rpc' },
+        default: { name: 'Bladescan', url: 'https://explorer.alt.technology?rpcUrl=https://flashlayer.alt.technology/blade74eb1498' },
     },
 
 } as const satisfies Chain
 
 // If you are deploying to chains other than anvil or Lattice testnet, add them here
-export const supportedChains: MUDChain[] = [foundry, latticeTestnet];
+export const supportedChains: MUDChain[] = [bladedao, foundry, latticeTestnet];
