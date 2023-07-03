@@ -29,9 +29,11 @@ export async function setupNetwork() {
 
   // Request drip from faucet
   const signer = result.network.signer.get();
-  const metamaskProvider = new Web3Provider((window as any).ethereum);
   const provider = result.network.providers.get().json;
-  const signerOrProvider = metamaskSigner ?? signer ?? provider;
+  // const metamaskProvider = new Web3Provider((window as any).ethereum);
+  // const metamaskSigner = metamaskProvider.getSigner();
+  const signerOrProvider = signer ?? provider;
+  //const signerOrProvider = metamaskSigner ?? signer ?? provider;
 
   // if (networkConfig.faucetServiceUrl && signer) {
   //   const address = await signer.getAddress();
@@ -59,15 +61,16 @@ export async function setupNetwork() {
   // Create a World contract instance
   const worldContract = IWorld__factory.connect(
     networkConfig.worldAddress,
-    signer ?? result.network.providers.get().json
+    signer ?? result.network.providers.get().json,
+    //signerOrProvider
   );
 
   // Create a fast tx executor
   const fastTxExecutor =
     signer?.provider instanceof JsonRpcProvider
       ? await createFastTxExecutor(
-          //signer as Signer & { provider: JsonRpcProvider }
-          signerOrProvider as Signer & { provider: JsonRpcProvider }
+          signer as Signer & { provider: JsonRpcProvider }
+          //signerOrProvider as Signer & { provider: JsonRpcProvider }
         )
       : null;
 

@@ -13,6 +13,8 @@ import { publicProvider } from 'wagmi/providers/public';
 import { bladedao} from "./mud/supportedChains";
 import { latticeTestnet } from "@latticexyz/common/chains";
 import CreateGameModal from "./components/Modals/CreateGameModal";
+import { InjectedConnector } from 'wagmi/connectors/injected';
+//import { MetaMaskConnector } from 'wagmi/connectors/metamask';
 
 const rootElement = document.getElementById("react-root");
 if (!rootElement) throw new Error("React root not found");
@@ -31,6 +33,9 @@ setup().then((result) => {
   )
   const config = createConfig({
     autoConnect: true,
+    connectors: [
+      new InjectedConnector({chains}),
+    ],
     publicClient,
     webSocketPublicClient,
   })
@@ -46,5 +51,5 @@ setup().then((result) => {
       </WagmiConfig>
     
   );
-  //mountDevTools();
+  mountDevTools();
 });
