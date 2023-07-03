@@ -20,4 +20,3 @@ eth_rpc_url = "https://follower.testnet-chain.linfra.xyz"
 
 [profile.blade]
 eth_rpc_url = "https://flashlayer.alt.technology/blade74eb1498"
-```
