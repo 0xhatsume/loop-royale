@@ -10,7 +10,7 @@ import { ToastContainer } from "react-toastify";
 
 import { WagmiConfig, createConfig, configureChains } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-//import { bladedao} from "./mud/supportedChains";
+import { bladedao} from "./mud/supportedChains";
 import { latticeTestnet } from "@latticexyz/common/chains";
 import CreateGameModal from "./components/Modals/CreateGameModal";
 
@@ -26,7 +26,7 @@ setup().then((result) => {
 
   const { chains, publicClient, webSocketPublicClient } = configureChains(
     //[bladedao],
-    [latticeTestnet],
+    [latticeTestnet, bladedao],
     [publicProvider()],
   )
   const config = createConfig({

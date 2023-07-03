@@ -3,8 +3,8 @@ import { createFastTxExecutor, createFaucetService } from "@latticexyz/network";
 import { getNetworkConfig } from "./getNetworkConfig";
 import { defineContractComponents } from "./contractComponents";
 import { world } from "./world";
-import { Contract, Signer, utils } from "ethers";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { Contract, Signer, providers, utils } from "ethers";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { IWorld__factory } from "contracts/types/ethers-contracts/factories/IWorld__factory";
 import storeConfig from "contracts/mud.config";
 
@@ -29,28 +29,32 @@ export async function setupNetwork() {
 
   // Request drip from faucet
   const signer = result.network.signer.get();
-  if (networkConfig.faucetServiceUrl && signer) {
-    const address = await signer.getAddress();
-    console.info("[Dev Faucet]: Player address -> ", address);
+  const metamaskProvider = new Web3Provider((window as any).ethereum);
+  const provider = result.network.providers.get().json;
+  const signerOrProvider = metamaskSigner ?? signer ?? provider;
 
-    const faucet = createFaucetService(networkConfig.faucetServiceUrl);
+  // if (networkConfig.faucetServiceUrl && signer) {
+  //   const address = await signer.getAddress();
+  //   console.info("[Dev Faucet]: Player address -> ", address);
 
-    const requestDrip = async () => {
-      const balance = await signer.getBalance();
-      console.info(`[Dev Faucet]: Player balance -> ${balance}`);
-      const lowBalance = balance?.lte(utils.parseEther("1"));
-      if (lowBalance) {
-        console.info("[Dev Faucet]: Balance is low, dripping funds to player");
-        // Double drip
-        await faucet.dripDev({ address });
-        await faucet.dripDev({ address });
-      }
-    };
+  //   const faucet = createFaucetService(networkConfig.faucetServiceUrl);
 
-    requestDrip();
-    // Request a drip every 20 seconds
-    setInterval(requestDrip, 20000);
-  }
+  //   const requestDrip = async () => {
+  //     const balance = await signer.getBalance();
+  //     console.info(`[Dev Faucet]: Player balance -> ${balance}`);
+  //     const lowBalance = balance?.lte(utils.parseEther("1"));
+  //     if (lowBalance) {
+  //       console.info("[Dev Faucet]: Balance is low, dripping funds to player");
+  //       // Double drip
+  //       await faucet.dripDev({ address });
+  //       await faucet.dripDev({ address });
+  //     }
+  //   };
+
+  //   requestDrip();
+  //   // Request a drip every 20 seconds
+  //   setInterval(requestDrip, 20000);
+  // }
 
   // Create a World contract instance
   const worldContract = IWorld__factory.connect(
@@ -62,7 +66,8 @@ export async function setupNetwork() {
   const fastTxExecutor =
     signer?.provider instanceof JsonRpcProvider
       ? await createFastTxExecutor(
-          signer as Signer & { provider: JsonRpcProvider }
+          //signer as Signer & { provider: JsonRpcProvider }
+          signerOrProvider as Signer & { provider: JsonRpcProvider }
         )
       : null;
 
