@@ -90,7 +90,7 @@ library BmPlayer {
   /** Get mapId */
   function getMapId(bytes32 key) internal view returns (bytes32 mapId) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0);
     return (Bytes.slice32(_blob, 0));
@@ -99,7 +99,7 @@ library BmPlayer {
   /** Get mapId (using the specified store) */
   function getMapId(IStore _store, bytes32 key) internal view returns (bytes32 mapId) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 0);
     return (Bytes.slice32(_blob, 0));
@@ -108,7 +108,7 @@ library BmPlayer {
   /** Set mapId */
   function setMapId(bytes32 key, bytes32 mapId) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((mapId)));
   }
@@ -116,7 +116,7 @@ library BmPlayer {
   /** Set mapId (using the specified store) */
   function setMapId(IStore _store, bytes32 key, bytes32 mapId) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((mapId)));
   }
@@ -124,7 +124,7 @@ library BmPlayer {
   /** Get player */
   function getPlayer(bytes32 key) internal view returns (bytes32 player) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1);
     return (Bytes.slice32(_blob, 0));
@@ -133,7 +133,7 @@ library BmPlayer {
   /** Get player (using the specified store) */
   function getPlayer(IStore _store, bytes32 key) internal view returns (bytes32 player) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 1);
     return (Bytes.slice32(_blob, 0));
@@ -142,7 +142,7 @@ library BmPlayer {
   /** Set player */
   function setPlayer(bytes32 key, bytes32 player) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 1, abi.encodePacked((player)));
   }
@@ -150,7 +150,7 @@ library BmPlayer {
   /** Set player (using the specified store) */
   function setPlayer(IStore _store, bytes32 key, bytes32 player) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((player)));
   }
@@ -158,7 +158,7 @@ library BmPlayer {
   /** Get ft */
   function getFt(bytes32 key) internal view returns (int32 ft) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
     return (int32(uint32(Bytes.slice4(_blob, 0))));
@@ -167,7 +167,7 @@ library BmPlayer {
   /** Get ft (using the specified store) */
   function getFt(IStore _store, bytes32 key) internal view returns (int32 ft) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
     return (int32(uint32(Bytes.slice4(_blob, 0))));
@@ -176,7 +176,7 @@ library BmPlayer {
   /** Set ft */
   function setFt(bytes32 key, int32 ft) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 2, abi.encodePacked((ft)));
   }
@@ -184,7 +184,7 @@ library BmPlayer {
   /** Set ft (using the specified store) */
   function setFt(IStore _store, bytes32 key, int32 ft) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((ft)));
   }
@@ -192,7 +192,7 @@ library BmPlayer {
   /** Get stake */
   function getStake(bytes32 key) internal view returns (uint256 stake) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 3);
     return (uint256(Bytes.slice32(_blob, 0)));
@@ -201,7 +201,7 @@ library BmPlayer {
   /** Get stake (using the specified store) */
   function getStake(IStore _store, bytes32 key) internal view returns (uint256 stake) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 3);
     return (uint256(Bytes.slice32(_blob, 0)));
@@ -210,7 +210,7 @@ library BmPlayer {
   /** Set stake */
   function setStake(bytes32 key, uint256 stake) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 3, abi.encodePacked((stake)));
   }
@@ -218,7 +218,7 @@ library BmPlayer {
   /** Set stake (using the specified store) */
   function setStake(IStore _store, bytes32 key, uint256 stake) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 3, abi.encodePacked((stake)));
   }
@@ -226,7 +226,7 @@ library BmPlayer {
   /** Get dead */
   function getDead(bytes32 key) internal view returns (bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 4);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
@@ -235,7 +235,7 @@ library BmPlayer {
   /** Get dead (using the specified store) */
   function getDead(IStore _store, bytes32 key) internal view returns (bool dead) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 4);
     return (_toBool(uint8(Bytes.slice1(_blob, 0))));
@@ -244,7 +244,7 @@ library BmPlayer {
   /** Set dead */
   function setDead(bytes32 key, bool dead) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 4, abi.encodePacked((dead)));
   }
@@ -252,7 +252,7 @@ library BmPlayer {
   /** Set dead (using the specified store) */
   function setDead(IStore _store, bytes32 key, bool dead) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 4, abi.encodePacked((dead)));
   }
@@ -260,7 +260,7 @@ library BmPlayer {
   /** Get x */
   function getX(bytes32 key) internal view returns (uint32 x) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 5);
     return (uint32(Bytes.slice4(_blob, 0)));
@@ -269,7 +269,7 @@ library BmPlayer {
   /** Get x (using the specified store) */
   function getX(IStore _store, bytes32 key) internal view returns (uint32 x) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 5);
     return (uint32(Bytes.slice4(_blob, 0)));
@@ -278,7 +278,7 @@ library BmPlayer {
   /** Set x */
   function setX(bytes32 key, uint32 x) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 5, abi.encodePacked((x)));
   }
@@ -286,7 +286,7 @@ library BmPlayer {
   /** Set x (using the specified store) */
   function setX(IStore _store, bytes32 key, uint32 x) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 5, abi.encodePacked((x)));
   }
@@ -294,7 +294,7 @@ library BmPlayer {
   /** Get y */
   function getY(bytes32 key) internal view returns (uint32 y) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 6);
     return (uint32(Bytes.slice4(_blob, 0)));
@@ -303,7 +303,7 @@ library BmPlayer {
   /** Get y (using the specified store) */
   function getY(IStore _store, bytes32 key) internal view returns (uint32 y) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 6);
     return (uint32(Bytes.slice4(_blob, 0)));
@@ -312,7 +312,7 @@ library BmPlayer {
   /** Set y */
   function setY(bytes32 key, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setField(_tableId, _keyTuple, 6, abi.encodePacked((y)));
   }
@@ -320,7 +320,7 @@ library BmPlayer {
   /** Set y (using the specified store) */
   function setY(IStore _store, bytes32 key, uint32 y) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setField(_tableId, _keyTuple, 6, abi.encodePacked((y)));
   }
@@ -328,7 +328,7 @@ library BmPlayer {
   /** Get the full data */
   function get(bytes32 key) internal view returns (BmPlayerData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = StoreSwitch.getRecord(_tableId, _keyTuple, getSchema());
     return decode(_blob);
@@ -337,7 +337,7 @@ library BmPlayer {
   /** Get the full data (using the specified store) */
   function get(IStore _store, bytes32 key) internal view returns (BmPlayerData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     bytes memory _blob = _store.getRecord(_tableId, _keyTuple, getSchema());
     return decode(_blob);
@@ -357,7 +357,7 @@ library BmPlayer {
     bytes memory _data = encode(mapId, player, ft, stake, dead, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.setRecord(_tableId, _keyTuple, _data);
   }
@@ -377,7 +377,7 @@ library BmPlayer {
     bytes memory _data = encode(mapId, player, ft, stake, dead, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.setRecord(_tableId, _keyTuple, _data);
   }
@@ -425,13 +425,13 @@ library BmPlayer {
   /** Encode keys as a bytes32 array using this table's schema */
   function encodeKeyTuple(bytes32 key) internal pure returns (bytes32[] memory _keyTuple) {
     _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
   }
 
   /* Delete all data for given keys */
   function deleteRecord(bytes32 key) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     StoreSwitch.deleteRecord(_tableId, _keyTuple);
   }
@@ -439,7 +439,7 @@ library BmPlayer {
   /* Delete all data for given keys (using the specified store) */
   function deleteRecord(IStore _store, bytes32 key) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
-    _keyTuple[0] = bytes32((key));
+    _keyTuple[0] = key;
 
     _store.deleteRecord(_tableId, _keyTuple);
   }

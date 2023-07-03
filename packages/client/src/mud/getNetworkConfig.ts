@@ -1,6 +1,7 @@
 import { SetupContractConfig, getBurnerWallet } from "@latticexyz/std-client";
 import worldsJson from "contracts/worlds.json";
-import { supportedChains } from "./supportedChains";
+import { supportedChains, bladedao } from "./supportedChains";
+import { MUDChain } from "@latticexyz/common/chains";
 
 const worlds = worldsJson as Partial<
   Record<string, { address: string; blockNumber?: number }>
@@ -9,6 +10,8 @@ const worlds = worldsJson as Partial<
 type NetworkConfig = SetupContractConfig & {
   privateKey: string;
   faucetServiceUrl?: string;
+  snapSync?: boolean;
+  chainConfig: MUDChain;
 };
 
 export async function getNetworkConfig(): Promise<NetworkConfig> {
@@ -43,8 +46,10 @@ export async function getNetworkConfig(): Promise<NetworkConfig> {
     },
     provider: {
       chainId,
-      jsonRpcUrl: params.get("rpc") ?? chain.rpcUrls.default.http[0],
-      wsRpcUrl: params.get("wsRpc") ?? chain.rpcUrls.default.webSocket?.[0],
+      jsonRpcUrl: chainId == 1013454 ? "https://flashlayer.alt.technology/blade74eb1498" 
+      : params.get("rpc") ?? chain.rpcUrls.default.http[0],
+      wsRpcUrl: chainId == 1013454 ? "wss://flashlayer.alt.technology/blade74eb1498" 
+      : params.get("wsRpc") ?? chain.rpcUrls.default.webSocket?.[0],
     },
     privateKey: getBurnerWallet().value,
     chainId,
@@ -52,6 +57,8 @@ export async function getNetworkConfig(): Promise<NetworkConfig> {
     faucetServiceUrl: params.get("faucet") ?? chain.faucetUrl,
     worldAddress,
     initialBlockNumber,
+    snapSync: params.get("snapSync") === "true",
     disableCache: params.get("cache") === "false",
+    chainConfig: chain
   };
 }

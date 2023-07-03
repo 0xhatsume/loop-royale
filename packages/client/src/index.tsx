@@ -14,6 +14,7 @@ import { bladedao} from "./mud/supportedChains";
 import { latticeTestnet } from "@latticexyz/common/chains";
 import CreateGameModal from "./components/Modals/CreateGameModal";
 import { InjectedConnector } from 'wagmi/connectors/injected';
+import { webSocket} from "viem";
 //import { MetaMaskConnector } from 'wagmi/connectors/metamask';
 
 const rootElement = document.getElementById("react-root");

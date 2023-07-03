@@ -25,7 +25,7 @@ export async function setupNetwork() {
     storeConfig,
   });
 
-  result.startSync();
+  //result.startSync();
 
   // Request drip from faucet
   const signer = result.network.signer.get();
@@ -61,9 +61,24 @@ export async function setupNetwork() {
   // Create a World contract instance
   const worldContract = IWorld__factory.connect(
     networkConfig.worldAddress,
-    signer ?? result.network.providers.get().json,
-    //signerOrProvider
+    //signer ?? result.network.providers.get().json,
+    signerOrProvider
   );
+  
+  if (networkConfig.snapSync) {
+    const currentBlockNumber = await provider.getBlockNumber();
+    const tableRecords = await getSnapSyncRecords(
+      networkConfig.worldAddress,
+      getTableIds(storeConfig),
+      currentBlockNumber,
+      signerOrProvider
+    );
+
+    console.log(`Syncing ${tableRecords.length} records`);
+    result.startSync(tableRecords, currentBlockNumber);
+  } else {
+    result.startSync();
+  }
 
   // Create a fast tx executor
   const fastTxExecutor =
@@ -83,9 +98,7 @@ export async function setupNetwork() {
     }
   ) => Promise<ReturnType<C[F]>>;
 
-  function bindFastTxExecute<C extends Contract>(
-    contract: C
-  ): BoundFastTxExecuteFn<C> {
+  function bindFastTxExecute<C extends Contract>(contract: C): BoundFastTxExecuteFn<C> {
     return async function (...args) {
       if (!fastTxExecutor) {
         throw new Error("no signer");
