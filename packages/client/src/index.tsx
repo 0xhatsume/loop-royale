@@ -42,14 +42,13 @@ setup().then((result) => {
   })
 
   root.render(
-    
+      <MUDProvider value={result}>
       <WagmiConfig config={config}>
-        <MUDProvider value={result}>
       <App />
       <CreateGameModal />
       <ToastContainer position="top-left" draggable={false} theme="dark" />
-      </MUDProvider>
       </WagmiConfig>
+      </MUDProvider>
     
   );
   mountDevTools();
