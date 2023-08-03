@@ -31,10 +31,10 @@ export async function setupNetwork() {
   // Request drip from faucet
   const signer = result.network.signer.get();
   const provider = result.network.providers.get().json;
-  const metamaskProvider = new Web3Provider((window as any).ethereum);
-  const metamaskSigner = metamaskProvider.getSigner();
-  //const signerOrProvider = signer ?? provider;
-  const signerOrProvider = metamaskSigner ?? signer ?? provider;
+  //const metamaskProvider = new Web3Provider((window as any).ethereum); // comment away if need origin config
+  //const metamaskSigner = metamaskProvider.getSigner(); // comment away if need origin config
+  const signerOrProvider = signer ?? provider; //origin config
+  //const signerOrProvider = metamaskSigner ?? signer ?? provider; // comment away if need origin config
 
   // if (networkConfig.faucetServiceUrl && signer) {
   //   const address = await signer.getAddress();
